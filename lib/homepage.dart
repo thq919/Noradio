@@ -1,25 +1,42 @@
 
-
+import 'package:just_audio/just_audio.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:flutter/material.dart';
-
-import 'YT/YT_api_handler.dart';
+import 'GUI/video_single_shelf.dart';
+import 'YT/yt_api_handler.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
+
+  HomePage({Key? key, required this.title}) : super(key: key);
+  late YoutubeExplode player;
+  var title;
+
+
   @override
   State<HomePage> createState() => _HomePageState();
+
 }
 
 class _HomePageState extends State<HomePage> {
-  void _setHomePageState() {
-    setState(() {});
+
+
+
+  @override
+  void initState() {
+    super.initState();
+
   }
 
   @override
   Widget build(BuildContext context) {
-    fun();
-    return Scaffold(body: Column());
+    // fun();
+
+    return Scaffold(body: Column(
+      children: [
+        Video_single_shelf()
+      ],
+    ));
+
   }
 }
 
@@ -60,4 +77,3 @@ class LoginPage extends StatelessWidget {
   }
 }
 // Как меня заебала эта срань просто пиздец, я не понимаю где я нахожусб
-

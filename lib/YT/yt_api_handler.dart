@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -9,10 +8,11 @@ class StreamAudio extends StreamAudioSource {
   int contentLength;
   int streamlenght;
 
+
   StreamAudio({
     required this.stream,
     required this.contentLength,
-    required this.streamlenght,
+    required this.streamlenght
   });
 
   @override
@@ -25,33 +25,37 @@ class StreamAudio extends StreamAudioSource {
         offset: 0);
   }
 }
+class MainPlayer {
 
-Future<void> fun() async {
-  try {
-    var yt = YoutubeExplode();
+  final YoutubeExplode _youhandler = YoutubeExplode();
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  late StreamManifest streamManifest;
+  late Stream<List<int>> stream;
+  late AudioOnlyStreamInfo streamInfo;
 
-    var streamManifest =
-        await yt.videos.streamsClient.getManifest('Dpp1sIL1m5Q');
-    var streamInfo = streamManifest.audioOnly.withHighestBitrate();
-    var stream = yt.videos.streamsClient.get(streamInfo);
+  AudioPlayer get audioPlayer => _audioPlayer;
+  YoutubeExplode get youhandler => _youhandler;
 
-    var player = AudioPlayer();
-    var audiosource = StreamAudio(
+  MainPlayer() {}
+
+  void playVideo(String videoID) async {
+
+    streamManifest = await youhandler.videos.streamsClient.getManifest(videoID);
+    streamInfo = streamManifest.audioOnly.withHighestBitrate();
+    stream = youhandler.videos.streamsClient.get(streamInfo);
+
+
+    AudioSource source = StreamAudio(
         stream: stream,
         streamlenght: streamInfo.size.totalBytes,
         contentLength: streamInfo.size.totalBytes);
-    AudioSource source = audiosource;
-    player.setAudioSource(source);
-    player.play();
 
-    // await audioPlayer.setUrl(file.path, preload: false);
-    // await stream.pipe(fileStream).whenComplete(() => audioPlayer.play());
-
-  } catch (e) {
-    print('пиздец');
-    print(e);
+    audioPlayer.setAudioSource(source);
+    audioPlayer.play();
   }
 }
+
+
 
 
 
