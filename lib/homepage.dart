@@ -55,7 +55,7 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                    'Telematcher is simple dating app based on Telegram messneger. It`s absolutlly free without any microtransactions. Feel free too eplore'),
+                    'Telematcher'),
                 Container(
                   height: 20,
                 ),
