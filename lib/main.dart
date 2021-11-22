@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TeleMatch',
       theme: MainTheme(),
-      home: const HomePage(title: 'TeleMatch main screen'),
+      home: HomePage(title: 'TeleMatch main screen'),
 
     );
   }
