@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -25,14 +26,16 @@ class StreamAudio extends StreamAudioSource {
         offset: 0);
   }
 }
+
 class MainPlayer {
 
-  final YoutubeExplode _youhandler = YoutubeExplode();
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  late StreamManifest streamManifest;
+  static final YoutubeExplode _youhandler = YoutubeExplode();
+  static final AudioPlayer _audioPlayer = AudioPlayer();
 
+  late StreamManifest streamManifest;
   late Stream<List<int>> stream;
   late AudioOnlyStreamInfo streamInfo;
+
   AudioPlayer get audioPlayer => _audioPlayer;
   YoutubeExplode get youhandler => _youhandler;
 
@@ -40,14 +43,19 @@ class MainPlayer {
 
 
   Future<SearchList?> searchVideos(String searchQuery) async {
+
     try {
-    return await youhandler.search.getVideos(searchQuery);}
-    catch(error) {print(error.toString()); return null;}
-  }
+      SearchList list = await youhandler.search.getVideos(searchQuery);
+      return list;
+    }
+    catch(error) {
+      print('Возникла ошибка в методе MainPlayer.searchVideos');
+      print(error);}
+    }
 
   Image getVideoThumbnail(String videoID) {
-    return Image.network("https://img.youtube.com/vi/"+ videoID + "/0.jpg");
-  }
+      return Image.network("https://img.youtube.com/vi/" + videoID + "/0.jpg");
+    }
 
   void playVideo(String videoID) async {
 
