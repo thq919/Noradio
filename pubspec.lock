@@ -323,7 +323,7 @@ packages:
       name: just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.17"
+    version: "0.9.18"
   just_audio_platform_interface:
     dependency: transitive
     description:
@@ -400,7 +400,7 @@ packages:
       name: path_provider_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.7"
+    version: "2.0.8"
   path_provider_ios:
     dependency: transitive
     description:
