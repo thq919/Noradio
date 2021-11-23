@@ -35,6 +35,7 @@ Future<void> fun() async {
     var streamInfo = streamManifest.audioOnly.withHighestBitrate();
     var stream = yt.videos.streamsClient.get(streamInfo);
 
+
     var player = AudioPlayer();
     var audiosource = StreamAudio(
         stream: stream,
