@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:flutter/material.dart';
@@ -20,20 +22,27 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
 
-
+  MainPlayer player = MainPlayer();
   @override
   void initState() {
     super.initState();
-
   }
-
+  void fun() async {
+    try {
+      SearchList? list;
+     await player.searchVideos('sarmat').then((value) => list = value);
+      list!.forEach((p0) {
+        print(p0);
+      });
+    } catch(e) {print(e); print('pizdec');};
+}
   @override
   Widget build(BuildContext context) {
-    // fun();
 
+   fun();
     return Scaffold(body: Column(
       children: [
-        Video_single_shelf()
+
       ],
     ));
 

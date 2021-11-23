@@ -5,7 +5,6 @@ class Video_single_shelf extends StatefulWidget {
 
   @override
   State<Video_single_shelf> createState() => Video_single_shelf_state();
-  var player;
 
 }
 class Video_single_shelf_state extends State<Video_single_shelf> {
