@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -38,8 +37,6 @@ class MainPlayer {
 
   AudioPlayer get audioPlayer => _audioPlayer;
   YoutubeExplode get youhandler => _youhandler;
-
-  MainPlayer() {}
 
 
   Future<SearchList?> searchVideos(String searchQuery) async {
