@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:just_audio/just_audio.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+
 import 'package:flutter/material.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+
 import 'GUI/video_single_shelf.dart';
 import 'YT/yt_api_handler.dart';
 
@@ -16,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   MainPlayer player = MainPlayer();
-  SearchList? list;
+  SearchList? videoSearchList;
   bool isSearchListExist = false;
   late String searchQue;
 
@@ -25,31 +26,58 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  void _searchForVideo(String searchQuery) async {
-    try {
-      await player.searchVideos(searchQuery).then((value) => list = value).whenComplete(() => isSearchListExist = true);
-      setState(() {});
-    } catch (e) {
-      print(e);
-      print('pizdec');
-    };
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(children: [
         TextField(onSubmitted: (value) async {
           searchQue = value;
-          _searchForVideo(searchQue);
+          Future<SearchList?> list = player.searchAudio(value);
+          await list.then((gotList) => {
+                setState(() {
+                  videoSearchList = gotList;
+                  isSearchListExist = true;
+                })
+              });
         }),
-
+        Container(
+          constraints: BoxConstraints(maxHeight: 720),
+          child: Builder(
+            builder: (BuildContext context) {
+              if (isSearchListExist) {
+                return WidgetList(
+                  player: player,
+                  search: videoSearchList!,
+                );
+              } else {
+                return Text('huy');
+              }
+            },
+          ),
+        )
       ]),
     );
   }
 }
 
+class WidgetList extends StatelessWidget {
+  late MainPlayer mainPlayer;
+  late SearchList searchList;
+
+  WidgetList({Key? key, required MainPlayer player, required SearchList search})
+      : super(key: key) {
+    mainPlayer = player;
+    searchList = search;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(itemBuilder: (BuildContext context, int index) {
+      return Container(
+          child: Video_single_shelf(searchList.elementAt(index++)));
+    });
+  }
+}
 // class LoginPage extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {

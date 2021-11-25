@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class StreamAudio extends StreamAudioSource {
@@ -39,27 +37,24 @@ class MainPlayer {
   YoutubeExplode get youhandler => _youhandler;
 
 
-  Future<SearchList?> searchVideos(String searchQuery) async {
-
+  Future<SearchList?> searchAudio(String searchQuery) async {
     try {
       SearchList list = await youhandler.search.getVideos(searchQuery);
       return list;
-    }
-    catch(error) {
+    } catch (error) {
       print('Возникла ошибка в методе MainPlayer.searchVideos');
-      print(error);}
+      print(error);
     }
+  }
 
   Image getVideoThumbnail(String videoID) {
       return Image.network("https://img.youtube.com/vi/" + videoID + "/0.jpg");
     }
 
-  void playVideo(String videoID) async {
-
+  void playAudio(String videoID) async {
     streamManifest = await youhandler.videos.streamsClient.getManifest(videoID);
     streamInfo = streamManifest.audioOnly.withHighestBitrate();
     stream = youhandler.videos.streamsClient.get(streamInfo);
-   
 
     AudioSource source = StreamAudio(
         stream: stream,
