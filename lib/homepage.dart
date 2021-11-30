@@ -19,7 +19,8 @@ class _HomePageState extends State<HomePage> {
   MainPlayer player = MainPlayer();
   SearchList? videoSearchList;
   bool isSearchListExist = false;
-  late String searchQue;
+  String? searchQue;
+  late WidgetList list;
 
   @override
   void initState() {
@@ -29,34 +30,47 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(children: [
-        TextField(onSubmitted: (value) async {
-          searchQue = value;
-          Future<SearchList?> list = player.searchAudio(value);
-          await list.then((gotList) => {
-                setState(() {
-                  videoSearchList = gotList;
-                  isSearchListExist = true;
-                })
-              });
-        }),
-        Container(
-          constraints: BoxConstraints(maxHeight: 720),
-          child: Builder(
-            builder: (BuildContext context) {
-              if (isSearchListExist) {
-                return WidgetList(
-                  player: player,
-                  search: videoSearchList!,
-                );
-              } else {
-                return Text('huy');
-              }
-            },
-          ),
-        )
+      appBar: AppBar(),
+      body: Wrap(children: [
+        buildTextFieldSearch(),
+        if (searchQue != null) buildTree(),
       ]),
     );
+  }
+
+  TextField buildTextFieldSearch() {
+    return TextField(onChanged: (value) {
+      setState(() {
+        searchQue = value;
+      });
+    });
+  }
+
+  FutureBuilder<SearchList?> buildTree() {
+    return FutureBuilder(
+      future: fillTheList(searchQue),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          searchQue = null;
+          list = WidgetList(player: player, search: snapshot.data!);
+          return list;
+        }
+        if (snapshot.hasError) {
+          return Text('ощибка');
+        } else
+          return CircularProgressIndicator();
+      },
+    );
+  }
+
+  Future<SearchList?> fillTheList(String? value) async {
+    if (value!.isEmpty) {
+      Future.delayed(const Duration(milliseconds: 500));
+    }
+    if (value.isNotEmpty) {
+      searchQue = value;
+      return player.searchAudio(value);
+    }
   }
 }
 
@@ -72,12 +86,34 @@ class WidgetList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: (BuildContext context, int index) {
-      return Container(
-          child: Video_single_shelf(searchList.elementAt(index++)));
-    });
+    //  ErrorSummary('Vertical viewport was given unbounded height.'),
+    //  ErrorDescription(
+    //  'Viewports expand in the scrolling direction to fill their container. '
+    //  'In this case, a vertical viewport was given an unlimited amount of '
+    //  'vertical space in which to expand. This situation typically happens '
+    //  'when a scrollable widget is nested inside another scrollable widget.',
+    //  ),
+    //  ErrorHint(
+    //  'If this widget is always nested in a scrollable widget there '
+    //  'is no need to use a viewport because there will always be enough '
+    //  'vertical space for the children. In this case, consider using a '
+    //  'Column instead. Otherwise, consider using the "shrinkWrap" property '
+    //  '(or a ShrinkWrappingViewport) to size the height of the viewport '
+    //  'to the sum of the heights of its children.',
+    return ListView.builder(
+        itemCount: 10,
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int position) {
+          return ListTile(
+            onTap: () =>
+                {mainPlayer.playAudio(searchList.elementAt(position).url)},
+            title: Video_single_shelf(searchList.elementAt(position)),
+          );
+        });
   }
 }
+
+class MyController extends ScrollController {}
 // class LoginPage extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {

@@ -22,7 +22,7 @@ class Video_single_shelf extends StatefulWidget {
 // thumbnails: ThumbnailSet(videoId: 6MsCsEhyvjI),: [], engagement: Engagement(viewCount: 99071, likeCount: null, dislikeCount: null), isLive: false, watchPage: null
 
 class Video_single_shelf_state extends State<Video_single_shelf> {
-  late Video video = widget.video;
+  late Video video;
   late VideoId videoId = video.id;
   late String title = video.title;
   late String author = video.author;
@@ -34,25 +34,27 @@ class Video_single_shelf_state extends State<Video_single_shelf> {
 
   @override
   void initState() {
+    video = widget.video;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Row(children: [
-      Container(
-        child: Image.network(thumbnail.lowResUrl),
-        constraints: BoxConstraints(maxHeight: 100),
-      ),
-      Container(
-          child: Text(title), constraints: BoxConstraints(maxHeight: 100)),
-      Container(
-          child: Text(author), constraints: BoxConstraints(maxHeight: 100)),
-      Container(
-          child: Text(duration.toString()),
-          constraints: BoxConstraints(maxHeight: 100))
-    ])
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(children: [
+        Text(title.toString())
+        //    Container(
+        //      child: Image.network(thumbnail.lowResUrl)
+        //    ),
+        //    Container(
+        //        child: Text(title) ),
+        //    Container(
+        //        child: Text(author)),
+        //    Container(
+        //        child: Text(duration.toString()),
+        //       )
+      ]),
     );
   }
 }
