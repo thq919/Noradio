@@ -6,15 +6,10 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'GUI/video_single_shelf.dart';
 import 'YT/yt_api_handler.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
   var title;
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(), body: WidgetList());
@@ -45,39 +40,42 @@ class _WidgetListState extends State<WidgetList> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(children: [
-      TextField(onChanged: (value) {
+    return ListView(children: [
+      TextField(onSubmitted: (value) {
         setState(() {
           searchQue = value;
         });
       }),
       searchQue != null
-          ? FutureBuilder(
-              future: fillTheList(searchQue),
-              builder: (BuildContext context, AsyncSnapshot searchListFuture) {
-                if (searchListFuture.hasData) {
-                  searchList = searchListFuture.data;
-                  return ListView.builder(
-                      itemCount: 10,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int position) {
-                        return ListTile(
-                          onTap: () => {
-                            player.playAudio(searchList.elementAt(position).url)
-                          },
-                          title: Video_single_shelf(
-                              searchList.elementAt(position)),
-                        );
-                      });
-                }
-                if (searchListFuture.hasError) {
-                  return Text('ощибка');
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            )
+          ? buildFutureBuilder()
           : Text('Введите что нибудь... сверху :)')
     ]);
+  }
+
+  FutureBuilder<SearchList?> buildFutureBuilder() {
+    return FutureBuilder(
+      future: fillTheList(searchQue),
+      builder: (BuildContext context, AsyncSnapshot searchListFuture) {
+        if (searchListFuture.hasData) {
+          searchList = searchListFuture.data;
+          return SingleChildScrollView(
+            child: Column(children: <Widget>[
+              ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: searchList.length,
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int position) {
+                    return Video_single_shelf(searchList.elementAt(position));
+                  }),
+            ]),
+          );
+        }
+        if (searchListFuture.hasError) {
+          return Text('ощибка');
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
+    );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class Video_single_shelf extends StatefulWidget {
@@ -40,21 +39,11 @@ class Video_single_shelf_state extends State<Video_single_shelf> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(children: [
-        Text(title.toString())
-        //    Container(
-        //      child: Image.network(thumbnail.lowResUrl)
-        //    ),
-        //    Container(
-        //        child: Text(title) ),
-        //    Container(
-        //        child: Text(author)),
-        //    Container(
-        //        child: Text(duration.toString()),
-        //       )
-      ]),
+    return ListTile(
+      leading: Image.network(thumbnail.lowResUrl),
+      title: Text(title),
+      subtitle:
+          Text(author + "  " + duration!.toString().replaceAll('.000000', '')),
     );
   }
 }
