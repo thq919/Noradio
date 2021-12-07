@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:path_provider/path_provider.dart';
 
 Future<bool> saveToDir(String nameForFile, Stream streamToFlush) async {
@@ -15,4 +16,5 @@ Future<bool> saveToDir(String nameForFile, Stream streamToFlush) async {
     return (false);
   } finally {
     return (true);
-  } }
+  }
+}

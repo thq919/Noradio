@@ -31,8 +31,9 @@ class Video_single_shelf extends StatelessWidget {
     return ListTile(
       leading: Image.network(thumbnail.lowResUrl),
       title: Text(title),
-      subtitle:
-          Text(author + "  " + duration!.toString().replaceAll('.000000', '')),
+      subtitle: Text(author +
+          "  " +
+          duration!.toString().replaceAll('.000000', '').replaceAll('0:', '')),
     );
   }
 }

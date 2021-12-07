@@ -7,11 +7,10 @@ class StreamAudio extends StreamAudioSource {
   int contentLength;
   int streamlenght;
 
-  StreamAudio({
-    required this.stream,
-    required this.contentLength,
-    required this.streamlenght
-  });
+  StreamAudio(
+      {required this.stream,
+      required this.contentLength,
+      required this.streamlenght});
 
   @override
   Future<StreamAudioResponse> request([int? start, int? end]) async {
@@ -25,6 +24,13 @@ class StreamAudio extends StreamAudioSource {
 }
 
 class MainPlayer {
+  MainPlayer._privateConstructor();
+
+  static final MainPlayer _mainPlayer = MainPlayer._privateConstructor();
+
+  factory MainPlayer() {
+    return _mainPlayer;
+  }
 
   static final YoutubeExplode _youhandler = YoutubeExplode();
   static final AudioPlayer _audioPlayer = AudioPlayer();
@@ -34,8 +40,8 @@ class MainPlayer {
   late AudioOnlyStreamInfo streamInfo;
 
   AudioPlayer get audioPlayer => _audioPlayer;
-  YoutubeExplode get youhandler => _youhandler;
 
+  YoutubeExplode get youhandler => _youhandler;
 
   Future<SearchList?> searchAudio(String searchQuery) async {
     try {
@@ -48,8 +54,8 @@ class MainPlayer {
   }
 
   Image getVideoThumbnail(String videoID) {
-      return Image.network("https://img.youtube.com/vi/" + videoID + "/0.jpg");
-    }
+    return Image.network("https://img.youtube.com/vi/" + videoID + "/0.jpg");
+  }
 
   void playAudio(String videoID) async {
     streamManifest = await youhandler.videos.streamsClient.getManifest(videoID);
@@ -65,8 +71,3 @@ class MainPlayer {
     audioPlayer.play();
   }
 }
-
-
-
-
-
