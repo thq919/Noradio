@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class Video_single_shelf extends StatefulWidget {
-  Video video;
 
-  @override
-  State<Video_single_shelf> createState() => Video_single_shelf_state();
-
-  Video_single_shelf(this.video, {Key? key}) : super(key: key) {}
-}
 // пример содержания
 // Video._internal(id: 6MsCsEhyvjI,
 // title: Sarmat strategic missile system,
@@ -20,7 +13,7 @@ class Video_single_shelf extends StatefulWidget {
 // duration: 0:00:51.000000,
 // thumbnails: ThumbnailSet(videoId: 6MsCsEhyvjI),: [], engagement: Engagement(viewCount: 99071, likeCount: null, dislikeCount: null), isLive: false, watchPage: null
 
-class Video_single_shelf_state extends State<Video_single_shelf> {
+class Video_single_shelf extends StatelessWidget {
   late Video video;
   late VideoId videoId = video.id;
   late String title = video.title;
@@ -31,11 +24,7 @@ class Video_single_shelf_state extends State<Video_single_shelf> {
   late Duration? duration = video.duration;
   late ThumbnailSet thumbnail = video.thumbnails;
 
-  @override
-  void initState() {
-    video = widget.video;
-    super.initState();
-  }
+  Video_single_shelf(this.video, {Key? key});
 
   @override
   Widget build(BuildContext context) {
