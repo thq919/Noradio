@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:telematch/GUI/custom_bottom_sheet.dart';
+import 'package:telematch/GUI/customBottomSheet.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-import '/YT/yt_api_handler.dart';
-import 'GUI/video_single_shelf.dart';
+import '/YT/youtubeHandler.dart';
+import 'GUI/videoSingleShelf.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
