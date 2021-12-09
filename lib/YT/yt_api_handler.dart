@@ -25,7 +25,6 @@ class StreamAudio extends StreamAudioSource {
 
 class MainPlayer {
   MainPlayer._privateConstructor();
-
   static final MainPlayer _mainPlayer = MainPlayer._privateConstructor();
 
   factory MainPlayer() {
@@ -40,7 +39,6 @@ class MainPlayer {
   late AudioOnlyStreamInfo streamInfo;
 
   AudioPlayer get audioPlayer => _audioPlayer;
-
   YoutubeExplode get youhandler => _youhandler;
 
   Future<SearchList?> searchAudio(String searchQuery) async {

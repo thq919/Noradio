@@ -1,31 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:telematch/YT/yt_api_handler.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class Custom_bottom_sheet extends StatefulWidget {
+class CustomBottomSheet extends StatefulWidget {
+  Video currentVideo;
+  int currentVideoIndex;
+
+  CustomBottomSheet(this.currentVideo, this.currentVideoIndex, {Key? key})
+      : super(key: key);
+
   @override
-  State<Custom_bottom_sheet> createState() => Custom_bottom_sheet_state();
+  State<CustomBottomSheet> createState() => CustomBottomSheetState();
 }
 
-class Custom_bottom_sheet_state extends State<Custom_bottom_sheet> {
+class CustomBottomSheetState extends State<CustomBottomSheet> {
+  MainPlayer player = MainPlayer();
+  bool IsVideoExist = false;
+
+  late Video currentVideo = widget.currentVideo;
+  late int currentVideoIndex = widget.currentVideoIndex;
+
+  @override
+  void didUpdateWidget(covariant CustomBottomSheet oldWidget) {
+    setState(() {
+      currentVideo = widget.currentVideo;
+      currentVideoIndex = widget.currentVideoIndex;
+    });
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void setVideo(Video currentVideo, int currentVideoIndex) {
+    setState(() {
+      this.currentVideo = currentVideo;
+      this.currentVideoIndex = currentVideoIndex;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
         color: Colors.white60,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height / 8,
-        child: ButtonBar(
-          alignment: MainAxisAlignment.spaceEvenly,
+        child: Column(
           children: [
-            IconButton(
-              icon: const Icon(Icons.volume_up),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(Icons.pause_outlined),
-              onPressed: null,
-            ),
-            IconButton(
-              icon: const Icon(Icons.play_arrow),
-              onPressed: () {},
+            ButtonBar(
+              alignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(currentVideo.id.toString()),
+                IconButton(
+                  icon: const Icon(Icons.volume_up),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.pause_outlined),
+                  onPressed: null,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.play_arrow),
+                  onPressed: () {},
+                )
+              ],
             )
           ],
         ));

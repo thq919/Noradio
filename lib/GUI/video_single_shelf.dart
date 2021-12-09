@@ -13,7 +13,7 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 // duration: 0:00:51.000000,
 // thumbnails: ThumbnailSet(videoId: 6MsCsEhyvjI),: [], engagement: Engagement(viewCount: 99071, likeCount: null, dislikeCount: null), isLive: false, watchPage: null
 
-class Video_single_shelf extends StatelessWidget {
+class VideoSingleShelf extends StatelessWidget {
   late Video video;
   late VideoId videoId = video.id;
   late String title = video.title;
@@ -24,7 +24,7 @@ class Video_single_shelf extends StatelessWidget {
   late Duration? duration = video.duration;
   late ThumbnailSet thumbnail = video.thumbnails;
 
-  Video_single_shelf(this.video, {Key? key});
+  VideoSingleShelf(this.video, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

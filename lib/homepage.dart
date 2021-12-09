@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:telematch/GUI/custom_bottom_sheet.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-import 'GUI/custom_bottom_sheet.dart';
+import '/YT/yt_api_handler.dart';
 import 'GUI/video_single_shelf.dart';
-import 'YT/yt_api_handler.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
   var title;
+
+  late SearchList searchList;
+
+  // Custom_bottom_sheet bottom = Custom_bottom_sheet();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: WidgetList(),
-      bottomSheet: Custom_bottom_sheet(),
+      // bottomSheet: bottom,
     );
   }
 }
@@ -24,14 +28,18 @@ class WidgetList extends StatefulWidget {
   WidgetList({Key? key}) : super(key: key);
 
   @override
-  State<WidgetList> createState() => _WidgetListState();
+  State<WidgetList> createState() => WidgetListState();
 }
 
-class _WidgetListState extends State<WidgetList> {
+class WidgetListState extends State<WidgetList> {
   final MainPlayer player = MainPlayer();
 
   late SearchList searchList;
+  late Video currentVideo;
+  late int currentVideoIndex;
+
   bool listExist = false;
+  bool videoIsPicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,20 +49,36 @@ class _WidgetListState extends State<WidgetList> {
           onFieldSubmitted: (searchQue) {
             fillListAndSetState(searchQue);
           }),
-      // isListArrived ? wid() : Text('Поиск..')
-      listExist
-          ? Expanded(
-              child: ListView.builder(
-                  physics: const ScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: searchList.length,
-                  itemBuilder: (context, int pos) =>
-                      build_Video_single_shelf_list(pos)))
-          : Text('Попробуйте ввести что нибудь в поиск')
+      if (listExist)
+        Expanded(
+            child: ListView.builder(
+                physics: const ScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: searchList.length,
+                itemBuilder: (context, int pos) {
+                  return InkWell(
+                      onTap: () => setCurrentAudioAndPlay(pos),
+                      child: buildVideoSingleShelfList(pos));
+                }))
+      else
+        Text('Попробуйте ввести что нибудь в поиск'),
+      if (videoIsPicked) CustomBottomSheet(currentVideo, currentVideoIndex)
     ]);
   }
 
-  Video_single_shelf build_Video_single_shelf_list(int pos) {
+  void setCurrentAudioAndPlay(int pos) {
+    currentVideoIndex = pos;
+    currentVideo = searchList.elementAt(pos);
+    videoIsPicked = true;
+    player.playAudio(currentVideo.id.toString());
+    setState(() {
+      currentVideoIndex;
+      currentVideo;
+      videoIsPicked;
+    });
+  }
+
+  VideoSingleShelf buildVideoSingleShelfList(int pos) {
     if (pos == searchList.length - 1) {
       searchList.nextPage().then((list) {
         if (list != null) {
@@ -64,7 +88,7 @@ class _WidgetListState extends State<WidgetList> {
         }
       });
     }
-    return Video_single_shelf(searchList.elementAt(pos));
+    return VideoSingleShelf(searchList.elementAt(pos));
   }
 
   void fillListAndSetState(String searchQue) {
