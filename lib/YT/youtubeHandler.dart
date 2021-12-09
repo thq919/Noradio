@@ -25,20 +25,23 @@ class StreamAudio extends StreamAudioSource {
 
 class MainPlayer {
   MainPlayer._privateConstructor();
+
   static final MainPlayer _mainPlayer = MainPlayer._privateConstructor();
 
   factory MainPlayer() {
     return _mainPlayer;
   }
 
-  static final YoutubeExplode _youhandler = YoutubeExplode();
-  static final AudioPlayer _audioPlayer = AudioPlayer();
+  static YoutubeExplode _youhandler = YoutubeExplode();
+  static AudioPlayer _audioPlayer = AudioPlayer();
 
   late StreamManifest streamManifest;
   late Stream<List<int>> stream;
   late AudioOnlyStreamInfo streamInfo;
+  late Stream<Duration> streamTicker;
 
   AudioPlayer get audioPlayer => _audioPlayer;
+
   YoutubeExplode get youhandler => _youhandler;
 
   Future<SearchList?> searchAudio(String searchQuery) async {
@@ -67,5 +70,6 @@ class MainPlayer {
 
     audioPlayer.setAudioSource(source);
     audioPlayer.play();
+    streamTicker = audioPlayer.createPositionStream();
   }
 }

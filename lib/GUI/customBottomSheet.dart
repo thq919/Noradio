@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:telematch/GUI/videoSingleShelf.dart';
 import 'package:telematch/YT/youtubeHandler.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -39,30 +40,58 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.white60,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height / 8,
-        child: Column(
-          children: [
-            ButtonBar(
-              alignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(currentVideo.id.toString()),
-                IconButton(
-                  icon: const Icon(Icons.volume_up),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.pause_outlined),
-                  onPressed: null,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.play_arrow),
-                  onPressed: () {},
-                )
-              ],
-            )
-          ],
-        ));
+      width: MediaQuery.of(context).size.width,
+      // height: MediaQuery.of(context).size.height / 8,
+      child: Column(children: [
+        Row(children: [
+          ButtonBar(
+            alignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(currentVideo.id.toString()),
+              IconButton(
+                icon: const Icon(Icons.volume_up),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.pause_outlined),
+                onPressed: null,
+              ),
+              IconButton(
+                icon: const Icon(Icons.play_arrow),
+                onPressed: () {},
+              )
+            ],
+          ),
+        ]),
+        VideoSingleShelf(currentVideo)
+      ]),
+    );
+
+    // return Container(
+    //     color: Colors.white60,
+    //     width: MediaQuery.of(context).size.width,
+    //     height: MediaQuery.of(context).size.height / 8,
+    //     child: Column(
+    //       children: [
+    //         ButtonBar(
+    //           alignment: MainAxisAlignment.spaceEvenly,
+    //           children: [
+    //             Text(currentVideo.id.toString()),
+    //             IconButton(
+    //               icon: const Icon(Icons.volume_up),
+    //               onPressed: () {},
+    //             ),
+    //             IconButton(
+    //               icon: const Icon(Icons.pause_outlined),
+    //               onPressed: null,
+    //             ),
+    //             IconButton(
+    //               icon: const Icon(Icons.play_arrow),
+    //               onPressed: () {},
+    //             )
+    //           ],
+    //         )
+    //       ],
+    //     ));
   }
 }

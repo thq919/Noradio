@@ -37,6 +37,7 @@ class WidgetListState extends State<WidgetList> {
   late SearchList searchList;
   late Video currentVideo;
   late int currentVideoIndex;
+ // late int lenghtOfSearchList;
 
   bool listExist = false;
   bool videoIsPicked = false;
@@ -58,7 +59,7 @@ class WidgetListState extends State<WidgetList> {
                 itemBuilder: (context, int pos) {
                   return InkWell(
                       onTap: () => setCurrentAudioAndPlay(pos),
-                      child: buildVideoSingleShelfList(pos));
+                      child: rebuildVideoSingleShelfList(pos));
                 }))
       else
         Text('Попробуйте ввести что нибудь в поиск'),
@@ -78,23 +79,31 @@ class WidgetListState extends State<WidgetList> {
     });
   }
 
-  VideoSingleShelf buildVideoSingleShelfList(int pos) {
+  VideoSingleShelf? rebuildVideoSingleShelfList(int pos) {
     if (pos == searchList.length - 1) {
       searchList.nextPage().then((list) {
-        if (list != null) {
+        if (list != null && list != searchList) {
           setState(() {
+            pos = searchList.length;
             searchList.addAll(list);
+            searchList.length;
           });
         }
       });
     }
-    return VideoSingleShelf(searchList.elementAt(pos));
+    if (searchList.indexOf(searchList.last) >= pos)
+      return VideoSingleShelf(searchList.elementAt(pos));
+    else {
+      return null;
+    }
+    ;
   }
 
   void fillListAndSetState(String searchQue) {
     player.searchAudio(searchQue).then((list) => setState(() {
           if (list.runtimeType == SearchList && list != null) {
             searchList = list;
+            searchList.length;
             listExist = true;
           }
         }));
