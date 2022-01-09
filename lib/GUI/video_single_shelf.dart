@@ -14,26 +14,17 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 // thumbnails: ThumbnailSet(videoId: 6MsCsEhyvjI),: [], engagement: Engagement(viewCount: 99071, likeCount: null, dislikeCount: null), isLive: false, watchPage: null
 
 class VideoSingleShelf extends StatelessWidget {
-  late Video video;
-  late VideoId videoId = video.id;
-  late String title = video.title;
-  late String author = video.author;
-  late ChannelId channelID = video.channelId;
-  late DateTime? uploadDate = video.uploadDate;
-  late DateTime? publishDate = video.publishDate;
-  late Duration? duration = video.duration;
-  late ThumbnailSet thumbnail = video.thumbnails;
-
-  VideoSingleShelf(this.video, {Key? key}) : super(key: key);
+  const VideoSingleShelf(this.video, {Key? key}) : super(key: key);
+  final Video video;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Image.network(thumbnail.lowResUrl),
-      title: Text(title),
-      subtitle: Text(author +
+      leading: Image.network(video.thumbnails.lowResUrl),
+      title: Text(video.title),
+      subtitle: Text(video.author +
           "  " +
-          duration!.toString().replaceAll('.000000', '').replaceAll('0:', '')),
+          video.duration!.toString().replaceAll('.000000', '').replaceAll('0:', '')),
     );
   }
 }

@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:telematch/GUI/customBottomSheet.dart';
+import 'package:telematch/GUI/custom_bottom_sheet.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-import '/YT/youtubeHandler.dart';
-import 'GUI/videoSingleShelf.dart';
+import '/YT/youtube_handler.dart';
+import 'GUI/video_single_shelf.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
@@ -28,19 +30,20 @@ class WidgetList extends StatefulWidget {
   WidgetList({Key? key}) : super(key: key);
 
   @override
-  State<WidgetList> createState() => WidgetListState();
+  State<WidgetList> createState() => _WidgetListState();
 }
 
-class WidgetListState extends State<WidgetList> {
+class _WidgetListState extends State<WidgetList> {
   final MainPlayer player = MainPlayer();
 
   late SearchList searchList;
   late Video currentVideo;
   late int currentVideoIndex;
- // late int lenghtOfSearchList;
+  late AudioOnlyStreamInfo streamInfo;
 
   bool listExist = false;
   bool videoIsPicked = false;
+  bool streamInfoIsCreated = false;
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +63,12 @@ class WidgetListState extends State<WidgetList> {
                   return InkWell(
                       onTap: () => setCurrentAudioAndPlay(pos),
                       child: rebuildVideoSingleShelfList(pos));
+                     // child: rebuildVideoSingleShelfList(pos));
                 }))
       else
-        Text('Попробуйте ввести что нибудь в поиск'),
-      if (videoIsPicked) CustomBottomSheet(currentVideo, currentVideoIndex)
+        const Text('Попробуйте ввести что нибудь в поиск'),
+      if (videoIsPicked && streamInfoIsCreated)
+        CustomBottomSheet(currentVideo, currentVideoIndex, streamInfo)
     ]);
   }
 
@@ -71,32 +76,39 @@ class WidgetListState extends State<WidgetList> {
     currentVideoIndex = pos;
     currentVideo = searchList.elementAt(pos);
     videoIsPicked = true;
-    player.playAudio(currentVideo.id.toString());
-    setState(() {
-      currentVideoIndex;
-      currentVideo;
-      videoIsPicked;
+    player.playAudio(currentVideo.id.toString()).then((_) {
+      streamInfo = player.streamInfo;
+      streamInfoIsCreated = true;
+      player.setVideoDuration(currentVideo.duration!);
+      player.setCurrentVideo(currentVideo);
+      setState(() {
+        currentVideoIndex;
+        streamInfo;
+        currentVideo;
+        videoIsPicked;
+        streamInfoIsCreated;
+      });
     });
   }
 
   VideoSingleShelf? rebuildVideoSingleShelfList(int pos) {
-    if (pos == searchList.length - 1) {
+    int posCheck = 20;
+    if (pos -1 == posCheck) {
+      posCheck = posCheck + 20;
       searchList.nextPage().then((list) {
-        if (list != null && list != searchList) {
+        if (list != null) {
           setState(() {
-            pos = searchList.length;
-            searchList.addAll(list);
-            searchList.length;
+            searchList = list;
           });
         }
       });
+
     }
-    if (searchList.indexOf(searchList.last) >= pos)
+    if (searchList.indexOf(searchList.last) >= pos ) {
       return VideoSingleShelf(searchList.elementAt(pos));
-    else {
+    } else {
       return null;
     }
-    ;
   }
 
   void fillListAndSetState(String searchQue) {
