@@ -4,7 +4,7 @@ Android player + another youtube client.
 That allow to play YouTube content with this opportunities:
 
 1. Simple player UI for Youtube searching
-2. Listen music, podcasts withound download useless for it video
+2. Listen music, podcasts without downloading actual video useless for listening
 3. No ads + no requires to auth (and so on - no possibility for now :) 
 
 Things to do:
