@@ -10,9 +10,8 @@ import 'GUI/video_single_shelf.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
-  var title;
 
-  late SearchList searchList;
+  var title;
 
   // Custom_bottom_sheet bottom = Custom_bottom_sheet();
 
@@ -36,6 +35,7 @@ class WidgetList extends StatefulWidget {
 class _WidgetListState extends State<WidgetList> {
   final MainPlayer player = MainPlayer();
 
+  String screenMessage = "Попробуйте ввести что нибудь в поиск";
   late SearchList searchList;
   late Video currentVideo;
   late int currentVideoIndex;
@@ -52,11 +52,15 @@ class _WidgetListState extends State<WidgetList> {
 
   Future<void> _refreshIndicator() async {
     player.getNextPage(searchList).then((newList) {
-      _scrollController
-          .jumpTo(_scrollController.positions.first.maxScrollExtent);
-      setState(() {
-        searchList = newList!;
-      });
+      if (newList == null) {
+        returnToStart();
+      } else {
+        _scrollController
+            .jumpTo(_scrollController.positions.first.maxScrollExtent);
+        setState(() {
+          searchList = newList;
+        });
+      }
     });
   }
 
@@ -97,7 +101,7 @@ class _WidgetListState extends State<WidgetList> {
               }),
         ))
       else
-        const Text('Попробуйте ввести что нибудь в поиск'),
+        Text(screenMessage),
       if (_videoIsPicked && _streamInfoIsCreated)
         CustomBottomSheet(currentVideo, currentVideoIndex, streamInfo)
     ]);
@@ -128,10 +132,22 @@ class _WidgetListState extends State<WidgetList> {
 
   void fillListAndSetState(String searchQue) {
     player.searchAudio(searchQue).then((list) {
-      setState(() {
-        searchList = list!;
-        _listExist = true;
-      });
+      if (list == null) {
+        returnToStart();
+      } else {
+        setState(() {
+          searchList = list;
+          _listExist = true;
+        });
+      }
+    });
+  }
+
+  void returnToStart() {
+    setState(() {
+      _listExist = false;
+      screenMessage =
+          "Кажется видео закончились, pogchamp. Попробуйте еще поискать что ли";
     });
   }
 }

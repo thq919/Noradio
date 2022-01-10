@@ -57,22 +57,30 @@ class MainPlayer {
   late String searchQuery;
   late SearchList currentSearchList;
   bool searchListIsCreated = false;
-  
-  //Debug 
+
+  //Debug
   late String errorSearchAudio;
 
   Future<SearchList?> searchAudio(String searchQuery) async {
-      currentSearchList = await youHandler.search.getVideos(searchQuery);
-      try {
-      if(currentSearchList.runtimeType == SearchList && currentSearchList.isNotEmpty) {
+    currentSearchList = await youHandler.search.getVideos(searchQuery);
+    try {
+      if (currentSearchList.runtimeType == SearchList &&
+          currentSearchList.isNotEmpty) {
         searchListIsCreated = true;
         return currentSearchList;
-      } } catch (error) {
-        errorSearchAudio = error.toString();
       }
+    } catch (error) {
+      errorSearchAudio = error.toString();
+    }
   }
-  Future<SearchList?> getNextPage(SearchList searchList) {
-    return searchList.nextPage();
+
+  Future<SearchList?> getNextPage(SearchList searchList) async {
+    SearchList? list = await searchList.nextPage();
+    if (list.runtimeType == SearchList && list!.isNotEmpty) {
+      return list;
+    } else {
+      return null;
+    }
   }
 
   Future<void> pause() => audioPlayer.pause();
