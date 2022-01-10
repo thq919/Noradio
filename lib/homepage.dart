@@ -41,33 +41,36 @@ class _WidgetListState extends State<WidgetList> {
   late int currentVideoIndex;
   late AudioOnlyStreamInfo streamInfo;
 
-  bool listExist = false;
-  bool videoIsPicked = false;
-  bool streamInfoIsCreated = false;
+  bool _listExist = false;
+  bool _videoIsPicked = false;
+  bool _streamInfoIsCreated = false;
 
   late ScrollController _scrollController;
-  _scrollListener () {
 
-    if (_scrollController.offset  > _scrollController.position.maxScrollExtent  && !_scrollController.position.outOfRange) {
-      player.getNextPage(searchList).then((newList) {
+  //later for any needs
+  _scrollListener() {}
 
-        setState(() {
-
-          searchList = newList!;
-          _scrollController.jumpTo(0);
-        });
+  Future<void> _refreshIndicator() async {
+    player.getNextPage(searchList).then((newList) {
+      _scrollController
+          .jumpTo(_scrollController.positions.first.maxScrollExtent);
+      setState(() {
+        searchList = newList!;
       });
-    }
+    });
   }
+
   //DEBUG
   late String errorOnCreatingSearchList;
-
   @override
   void initState() {
-    _scrollController = ScrollController();
+    _scrollController = ScrollController(
+        //this is analogue of double.infinite but chinese version
+        initialScrollOffset: 1000);
     _scrollController.addListener(_scrollListener);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -76,25 +79,26 @@ class _WidgetListState extends State<WidgetList> {
           onFieldSubmitted: (searchQue) {
             fillListAndSetState(searchQue);
           }),
-      if (listExist)
+      if (_listExist)
         Expanded(
-            child: NotificationListener<ScrollNotification>(
-
-              child: ListView.builder(
-                  controller: _scrollController,
-                  physics: const ScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: searchList.length,
-                  itemBuilder: (context, int pos) {
-                    return InkWell(
-                        onTap: () => setCurrentAudioAndPlay(pos),
-                        child: buildVideoSingleShelfList(pos));
-                    // child: rebuildVideoSingleShelfList(pos));
-                  }),
-            ))
+            child: RefreshIndicator(
+          onRefresh: _refreshIndicator,
+          child: ListView.builder(
+              reverse: true,
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              //physics: const ScrollPhysics(),
+              // shrinkWrap: true,
+              itemCount: searchList.length,
+              itemBuilder: (context, int pos) {
+                return InkWell(
+                    onTap: () => setCurrentAudioAndPlay(pos),
+                    child: buildVideoSingleShelfList(pos));
+              }),
+        ))
       else
         const Text('Попробуйте ввести что нибудь в поиск'),
-      if (videoIsPicked && streamInfoIsCreated)
+      if (_videoIsPicked && _streamInfoIsCreated)
         CustomBottomSheet(currentVideo, currentVideoIndex, streamInfo)
     ]);
   }
@@ -102,18 +106,18 @@ class _WidgetListState extends State<WidgetList> {
   void setCurrentAudioAndPlay(int pos) {
     currentVideoIndex = pos;
     currentVideo = searchList.elementAt(pos);
-    videoIsPicked = true;
+    _videoIsPicked = true;
     player.playAudio(currentVideo.id.toString()).then((_) {
       streamInfo = player.streamInfo;
-      streamInfoIsCreated = true;
+      _streamInfoIsCreated = true;
       player.setVideoDuration(currentVideo.duration!);
       player.setCurrentVideo(currentVideo);
       setState(() {
         currentVideoIndex;
         streamInfo;
         currentVideo;
-        videoIsPicked;
-        streamInfoIsCreated;
+        _videoIsPicked;
+        _streamInfoIsCreated;
       });
     });
   }
@@ -124,10 +128,10 @@ class _WidgetListState extends State<WidgetList> {
 
   void fillListAndSetState(String searchQue) {
     player.searchAudio(searchQue).then((list) {
-        setState(() {
-          searchList = list!;
-          listExist = true;
-        });
+      setState(() {
+        searchList = list!;
+        _listExist = true;
+      });
     });
   }
 }
