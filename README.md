@@ -3,13 +3,13 @@
 Android player + another youtube client.
 That allow to play YouTube content with this opportunities:
 
-1. Play only audio with simple player UI 
-2. Faster access to youtube media and save ethernet traffic
-3. No ads
+1. Simple player UI for Youtube searching
+2. Listen music, podcasts withound download useless for it video
+3. No ads + no requires to auth (and so on - no possibility for now :) 
 
-To do:
+Things to do:
 1. Background managament from up notification menu
-2. Save it to local device to play it later + search via name
+2. Save it to local device to play it later + sorting in playlist
 3. To see full metadata of video on one button + share link to other apps
 
 # Installing 
