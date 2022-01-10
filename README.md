@@ -13,6 +13,8 @@ Things to do:
 3. To see full metadata of video on one button + share link to other apps
 
 # Installing 
+Created and tested for android only
+
 1. download project;
 2. "cd ./path-to-project";
 3. "flutter build apk --split-per-abi";
