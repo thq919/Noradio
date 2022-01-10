@@ -1,4 +1,4 @@
-import 'dart:async';
+// import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -45,6 +45,29 @@ class _WidgetListState extends State<WidgetList> {
   bool videoIsPicked = false;
   bool streamInfoIsCreated = false;
 
+  late ScrollController _scrollController;
+  _scrollListener () {
+
+    if (_scrollController.offset  > _scrollController.position.maxScrollExtent  && !_scrollController.position.outOfRange) {
+      player.getNextPage(searchList).then((newList) {
+
+        setState(() {
+
+          searchList = newList!;
+          _scrollController.jumpTo(0);
+        });
+      });
+    }
+  }
+  //DEBUG
+  late String errorOnCreatingSearchList;
+
+  @override
+  void initState() {
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -55,16 +78,20 @@ class _WidgetListState extends State<WidgetList> {
           }),
       if (listExist)
         Expanded(
-            child: ListView.builder(
-                physics: const ScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: searchList.length,
-                itemBuilder: (context, int pos) {
-                  return InkWell(
-                      onTap: () => setCurrentAudioAndPlay(pos),
-                      child: rebuildVideoSingleShelfList(pos));
-                     // child: rebuildVideoSingleShelfList(pos));
-                }))
+            child: NotificationListener<ScrollNotification>(
+
+              child: ListView.builder(
+                  controller: _scrollController,
+                  physics: const ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: searchList.length,
+                  itemBuilder: (context, int pos) {
+                    return InkWell(
+                        onTap: () => setCurrentAudioAndPlay(pos),
+                        child: buildVideoSingleShelfList(pos));
+                    // child: rebuildVideoSingleShelfList(pos));
+                  }),
+            ))
       else
         const Text('Попробуйте ввести что нибудь в поиск'),
       if (videoIsPicked && streamInfoIsCreated)
@@ -91,33 +118,16 @@ class _WidgetListState extends State<WidgetList> {
     });
   }
 
-  VideoSingleShelf? rebuildVideoSingleShelfList(int pos) {
-    int posCheck = 20;
-    if (pos -1 == posCheck) {
-      posCheck = posCheck + 20;
-      searchList.nextPage().then((list) {
-        if (list != null) {
-          setState(() {
-            searchList = list;
-          });
-        }
-      });
-
-    }
-    if (searchList.indexOf(searchList.last) >= pos ) {
-      return VideoSingleShelf(searchList.elementAt(pos));
-    } else {
-      return null;
-    }
+  VideoSingleShelf buildVideoSingleShelfList(int pos) {
+    return VideoSingleShelf(searchList.elementAt(pos));
   }
 
   void fillListAndSetState(String searchQue) {
-    player.searchAudio(searchQue).then((list) => setState(() {
-          if (list.runtimeType == SearchList && list != null) {
-            searchList = list;
-            searchList.length;
-            listExist = true;
-          }
-        }));
+    player.searchAudio(searchQue).then((list) {
+        setState(() {
+          searchList = list!;
+          listExist = true;
+        });
+    });
   }
 }

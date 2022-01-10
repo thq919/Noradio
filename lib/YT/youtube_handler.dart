@@ -54,15 +54,25 @@ class MainPlayer {
   late int streamLength;
 
   // current search list returned by search request from YouTubeExplode
+  late String searchQuery;
   late SearchList currentSearchList;
+  bool searchListIsCreated = false;
+  
+  //Debug 
+  late String errorSearchAudio;
 
   Future<SearchList?> searchAudio(String searchQuery) async {
-    try {
       currentSearchList = await youHandler.search.getVideos(searchQuery);
-      return currentSearchList;
-    } catch (error) {
-      print(error);
-    }
+      try {
+      if(currentSearchList.runtimeType == SearchList && currentSearchList.isNotEmpty) {
+        searchListIsCreated = true;
+        return currentSearchList;
+      } } catch (error) {
+        errorSearchAudio = error.toString();
+      }
+  }
+  Future<SearchList?> getNextPage(SearchList searchList) {
+    return searchList.nextPage();
   }
 
   Future<void> pause() => audioPlayer.pause();
