@@ -1,19 +1,15 @@
 // import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:telematch/GUI/custom_bottom_sheet.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
-
 import '/YT/youtube_handler.dart';
 import 'GUI/video_single_shelf.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key, required this.title}) : super(key: key);
+  const HomePage({Key? key, required this.title}) : super(key: key);
 
-  var title;
-
-  // Custom_bottom_sheet bottom = Custom_bottom_sheet();
+  final title;
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +22,17 @@ class HomePage extends StatelessWidget {
 }
 
 class WidgetList extends StatefulWidget {
-  WidgetList({Key? key}) : super(key: key);
+  const WidgetList({Key? key}) : super(key: key);
 
   @override
   State<WidgetList> createState() => _WidgetListState();
 }
 
 class _WidgetListState extends State<WidgetList> {
-  final MainPlayer player = MainPlayer();
 
   String screenMessage = "Попробуйте ввести что нибудь в поиск";
+  final MainPlayer player = MainPlayer();
+
   late SearchList searchList;
   late Video currentVideo;
   late int currentVideoIndex;
@@ -47,25 +44,12 @@ class _WidgetListState extends State<WidgetList> {
 
   late ScrollController _scrollController;
 
-  //later for any needs
-  _scrollListener() {}
-
-  Future<void> _refreshIndicator() async {
-    player.getNextPage(searchList).then((newList) {
-      if (newList == null) {
-        returnToStart();
-      } else {
-        _scrollController
-            .jumpTo(_scrollController.positions.first.maxScrollExtent);
-        setState(() {
-          searchList = newList;
-        });
-      }
-    });
-  }
 
   //DEBUG
   late String errorOnCreatingSearchList;
+
+
+
   @override
   void initState() {
     _scrollController = ScrollController(
@@ -142,6 +126,21 @@ class _WidgetListState extends State<WidgetList> {
       }
     });
   }
+  Future<void> _refreshIndicator() async {
+    player.getNextPage(searchList).then((newList) {
+      if (newList == null) {
+        returnToStart();
+      } else {
+        _scrollController
+            .jumpTo(_scrollController.positions.first.maxScrollExtent);
+        setState(() {
+          searchList = newList;
+        });
+      }
+    });
+  }
+  //later for any upcoming needs
+  _scrollListener() {}
 
   void returnToStart() {
     setState(() {

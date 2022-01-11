@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -86,8 +87,7 @@ class MainPlayer {
   Future<void> pause() => audioPlayer.pause();
   Future<void> play() => audioPlayer.play();
 
-  Future<void> setVolume(double whatVolume) =>
-      audioPlayer.setVolume(whatVolume);
+  Future<void> setVolume(double whatVolume) => audioPlayer.setVolume(whatVolume);
 
   Duration? getVideoDuration() => videoDuration;
   void setVideoDuration(Duration whatDuration) => videoDuration = whatDuration;
@@ -106,8 +106,10 @@ class MainPlayer {
       streamLength: streamInfo.size.totalBytes,
       contentLength: streamInfo.size.totalBytes,
     );
+
     videoDuration = await audioPlayer.setAudioSource(source, preload: false);
     audioPlayer.play();
+
   }
 
   void playPosition(int whatPosition) async {

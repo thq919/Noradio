@@ -1,4 +1,3 @@
-// import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:telematch/GUI/video_single_shelf.dart';
 import 'package:telematch/YT/youtube_handler.dart';
@@ -39,7 +38,7 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
       width: MediaQuery.of(context).size.width,
       // height: MediaQuery.of(context).size.height / 4,
       child: Column(children: [
-        Container(child: DynamicSlider(player)),
+        DynamicSlider(player),
         Row(children: [
           ButtonBar(
             alignment: MainAxisAlignment.spaceEvenly,
@@ -110,9 +109,12 @@ class _DynamicSliderState extends State<DynamicSlider> {
 
   double listenToSteps() {
     widget.player.getPositionedStream().listen((event) {
+      if(currentPosition==event.inSeconds.toDouble()) {
+           //skip setstate
+      } else {
       setState(() {
         currentPosition = event.inSeconds.toDouble();
-      });
+      }); }
     });
     return currentPosition;
   }
