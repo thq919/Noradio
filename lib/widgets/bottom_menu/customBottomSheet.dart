@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:telematch/GUI/widgets/videoSingleShelf.dart';
 import 'package:telematch/YT/mainPlayer.dart';
+import 'package:telematch/widgets/video/videoSingleShelf.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import 'dynamicSlider.dart';

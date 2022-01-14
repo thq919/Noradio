@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:telematch/widgets/video/videoSingleShelf.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-import '../GUI/bottom_menu/customBottomSheet.dart';
-import '../GUI/widgets/videoSingleShelf.dart';
+import '../widgets/bottom_menu/customBottomSheet.dart';
+
 import '../YT/mainPlayer.dart';
 
 class VideoList extends StatefulWidget {
