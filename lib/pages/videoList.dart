@@ -1,34 +1,18 @@
-// import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:telematch/GUI/custom_bottom_sheet.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
-import '/YT/youtube_handler.dart';
-import 'GUI/video_single_shelf.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key, required this.title}) : super(key: key);
+import '../GUI/bottom_menu/customBottomSheet.dart';
+import '../GUI/widgets/videoSingleShelf.dart';
+import '../YT/mainPlayer.dart';
 
-  final title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: WidgetList(),
-      // bottomSheet: bottom,
-    );
-  }
-}
-
-class WidgetList extends StatefulWidget {
-  const WidgetList({Key? key}) : super(key: key);
+class VideoList extends StatefulWidget {
+  const VideoList({Key? key}) : super(key: key);
 
   @override
-  State<WidgetList> createState() => _WidgetListState();
+  State<VideoList> createState() => _VideoListState();
 }
 
-class _WidgetListState extends State<WidgetList> {
+class _VideoListState extends State<VideoList> {
 
   String screenMessage = "Попробуйте ввести что нибудь в поиск";
   final MainPlayer player = MainPlayer();
@@ -53,7 +37,7 @@ class _WidgetListState extends State<WidgetList> {
   @override
   void initState() {
     _scrollController = ScrollController(
-        //this is analogue of double.infinite but chinese version
+      //this is analogue of double.infinite but chinese version
         initialScrollOffset: 1000);
     _scrollController.addListener(_scrollListener);
     super.initState();
@@ -70,20 +54,20 @@ class _WidgetListState extends State<WidgetList> {
       if (_listExist)
         Expanded(
             child: RefreshIndicator(
-          onRefresh: _refreshIndicator,
-          child: ListView.builder(
-              reverse: true,
-              controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              //physics: const ScrollPhysics(),
-              // shrinkWrap: true,
-              itemCount: searchList.length,
-              itemBuilder: (context, int pos) {
-                return InkWell(
-                    onTap: () => setCurrentAudioAndPlay(pos),
-                    child: buildVideoSingleShelfList(pos));
-              }),
-        ))
+              onRefresh: _refreshIndicator,
+              child: ListView.builder(
+                  reverse: true,
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  //physics: const ScrollPhysics(),
+                  // shrinkWrap: true,
+                  itemCount: searchList.length,
+                  itemBuilder: (context, int pos) {
+                    return InkWell(
+                        onTap: () => setCurrentAudioAndPlay(pos),
+                        child: buildVideoSingleShelfList(pos));
+                  }),
+            ))
       else
         Text(screenMessage),
       if (_videoIsPicked && _streamInfoIsCreated)
@@ -146,7 +130,7 @@ class _WidgetListState extends State<WidgetList> {
     setState(() {
       _listExist = false;
       screenMessage =
-          "Кажется видео закончились, pogchamp. Попробуйте еще поискать что ли";
+      "Кажется видео закончились, pogchamp. Попробуйте еще поискать что ли";
     });
   }
 }

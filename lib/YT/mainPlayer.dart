@@ -1,35 +1,9 @@
 import 'dart:async';
-
 import 'package:just_audio/just_audio.dart';
+import 'package:telematch/YT/streamAudio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 // This is model for audio focused to play in stream&live mode
-class StreamAudio extends StreamAudioSource {
-  Stream<List<int>> stream;
-  int contentLength;
-  int streamLength;
-  int? offset = 0;
-
-  StreamAudio(
-      {required this.stream,
-      required this.contentLength,
-      required this.streamLength,
-      this.offset});
-
-  int getStreamLength() => streamLength;
-  int getContentLength() => contentLength;
-
-  @override
-  Future<StreamAudioResponse> request([int? start, int? end]) async {
-    return StreamAudioResponse(
-        stream: stream,
-        contentType: MainPlayer().streamInfo.audioCodec,
-        contentLength: contentLength,
-        sourceLength: streamLength,
-        rangeRequestsSupported: true,
-        offset: start);
-  }
-}
 
 class MainPlayer {
   static final MainPlayer _mainPlayer = MainPlayer._privateConstructor();
@@ -86,12 +60,10 @@ class MainPlayer {
 
   Future<void> pause() => audioPlayer.pause();
   Future<void> play() => audioPlayer.play();
-
-  Future<void> setVolume(double whatVolume) => audioPlayer.setVolume(whatVolume);
-
+  Future<void> setVolume(double whatVolume) =>
+      audioPlayer.setVolume(whatVolume);
   Duration? getVideoDuration() => videoDuration;
   void setVideoDuration(Duration whatDuration) => videoDuration = whatDuration;
-
   Video getCurrentVideo() => currentVideo;
   void setCurrentVideo(Video currentVideo) => this.currentVideo = currentVideo;
 
@@ -99,17 +71,14 @@ class MainPlayer {
     this.videoID = videoID;
     streamManifest = await youHandler.videos.streamsClient.getManifest(videoID);
     streamInfo = streamManifest.audioOnly.withHighestBitrate();
-    stream =
-        youHandler.videos.streamsClient.get(streamInfo).asBroadcastStream();
+    stream = youHandler.videos.streamsClient.get(streamInfo).asBroadcastStream();
     source = StreamAudio(
-      stream: stream,
-      streamLength: streamInfo.size.totalBytes,
-      contentLength: streamInfo.size.totalBytes,
-    );
-
+        stream: stream,
+        streamLength: streamInfo.size.totalBytes,
+        contentLength: streamInfo.size.totalBytes,
+        contentType: streamInfo.codec.toString());
     videoDuration = await audioPlayer.setAudioSource(source, preload: false);
     audioPlayer.play();
-
   }
 
   void playPosition(int whatPosition) async {
