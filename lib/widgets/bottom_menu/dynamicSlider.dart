@@ -1,7 +1,5 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:telematch/YT/mainPlayer.dart';
+import 'package:noradio/YT/mainPlayer.dart';
 
 class DynamicSlider extends StatefulWidget {
 final MainPlayer player;

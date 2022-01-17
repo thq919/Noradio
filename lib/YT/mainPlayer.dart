@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:just_audio/just_audio.dart';
-import 'package:telematch/YT/streamAudio.dart';
+import 'package:noradio/YT/streamAudio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 // This is model for audio focused to play in stream&live mode

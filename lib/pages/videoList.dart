@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:telematch/widgets/video/videoSingleShelf.dart';
+import 'package:noradio/widgets/video/videoSingleShelf.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+import '../utils.dart';
 import '../widgets/bottom_menu/customBottomSheet.dart';
 
 import '../YT/mainPlayer.dart';
 
 class VideoList extends StatefulWidget {
-  const VideoList({Key? key}) : super(key: key);
-
+  VideoList({Key? key, required this.fromSaved}) : super(key: key);
+  bool fromSaved = false;
   @override
   State<VideoList> createState() => _VideoListState();
 }
 
 class _VideoListState extends State<VideoList> {
-
   String screenMessage = "Попробуйте ввести что нибудь в поиск";
   final MainPlayer player = MainPlayer();
 
@@ -29,46 +29,49 @@ class _VideoListState extends State<VideoList> {
 
   late ScrollController _scrollController;
 
-
   //DEBUG
   late String errorOnCreatingSearchList;
-
-
 
   @override
   void initState() {
     _scrollController = ScrollController(
-      //this is analogue of double.infinite but chinese version
+        //this is analogue of double.infinite but chinese version
         initialScrollOffset: 1000);
     _scrollController.addListener(_scrollListener);
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
+      //create own searchbar
       TextFormField(
           enableSuggestions: true,
           onFieldSubmitted: (searchQue) {
-            fillListAndSetState(searchQue);
+            if (widget.fromSaved == true) {
+              fillListFromSavedAndSetState();
+            } else {
+              fillListAndSetState(searchQue);
+            }
           }),
       if (_listExist)
         Expanded(
             child: RefreshIndicator(
-              onRefresh: _refreshIndicator,
-              child: ListView.builder(
-                  reverse: true,
-                  controller: _scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  //physics: const ScrollPhysics(),
-                  // shrinkWrap: true,
-                  itemCount: searchList.length,
-                  itemBuilder: (context, int pos) {
-                    return InkWell(
-                        onTap: () => setCurrentAudioAndPlay(pos),
-                        child: buildVideoSingleShelfList(pos));
-                  }),
-            ))
+          onRefresh: _refreshIndicator,
+          child: ListView.builder(
+              reverse: true,
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              //physics: const ScrollPhysics(),
+              // shrinkWrap: true,
+              itemCount: searchList.length,
+              itemBuilder: (context, int pos) {
+                return InkWell(
+                    onTap: () => setCurrentAudioAndPlay(pos),
+                    child: buildVideoSingleShelfList(pos));
+              }),
+        ))
       else
         Text(screenMessage),
       if (_videoIsPicked && _streamInfoIsCreated)
@@ -111,6 +114,7 @@ class _VideoListState extends State<VideoList> {
       }
     });
   }
+
   Future<void> _refreshIndicator() async {
     player.getNextPage(searchList).then((newList) {
       if (newList == null) {
@@ -124,6 +128,7 @@ class _VideoListState extends State<VideoList> {
       }
     });
   }
+
   //later for any upcoming needs
   _scrollListener() {}
 
@@ -131,7 +136,18 @@ class _VideoListState extends State<VideoList> {
     setState(() {
       _listExist = false;
       screenMessage =
-      "Кажется видео закончились, pogchamp. Попробуйте еще поискать что ли";
+          "Кажется видео закончились, pogchamp. Попробуйте еще поискать что ли";
     });
+  }
+
+  Future<void> fillListFromSavedAndSetState() async {
+    List<Video> list = await getAll() as List<Video>;
+    if (list == null) {
+      returnToStart();
+    } else {
+      setState(() {
+        searchList = list as SearchList;
+      });
+    }
   }
 }

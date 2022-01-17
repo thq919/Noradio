@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:telematch/YT/mainPlayer.dart';
-import 'package:telematch/widgets/video/videoSingleShelf.dart';
+import 'package:noradio/YT/mainPlayer.dart';
+import 'package:noradio/utils.dart';
+import 'package:noradio/widgets/video/videoSingleShelf.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import 'dynamicSlider.dart';
@@ -45,13 +46,35 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
           ButtonBar(
             alignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text(currentVideo.id.toString()),
+              IconButton(
+                icon: const Icon(Icons.downloading),
+                onPressed: () async {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                        ' Видео ' + player.currentVideo.title + ' сохраняется '),
+                  ));
+                  await saveToDir(player.currentVideo.title, player.stream)
+                      .then((isSaved) {
+                    if (isSaved) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            ' Видео' + player.currentVideo.title + 'сохранено '),
+                      ));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text(' При сохранении видео произошла ошибка '),
+                      ));
+                    }
+                  });
+
+                },
+              ),
               IconButton(
                 icon: const Icon(Icons.volume_up),
                 onPressed: () {},
               ),
               IconButton(
-                icon: Icon(Icons.pause_outlined),
+                icon: const Icon(Icons.pause),
                 onPressed: () => player.pause(),
               ),
               IconButton(
@@ -66,5 +89,3 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
     );
   }
 }
-
-

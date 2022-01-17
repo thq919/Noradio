@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:noradio/theme.dart';
 import 'pages/homepage.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -13,15 +15,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TeleMatch',
       theme: MainTheme(),
-      home: HomePage(title: 'TeleMatch main screen'),
+      home: HomePage(title: 'main screen'),
 
     );
   }
 }
 
-ThemeData MainTheme() {
-  return ThemeData(
-    primarySwatch: Colors.deepPurple,
-    backgroundColor: Colors.black54
-    );
-}
