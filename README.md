@@ -9,7 +9,7 @@ That allow to play YouTube content with this opportunities:
 
 Things to do:
 1. Background management from up notification menu
-2. Save it to local device to play it later + sorting in playlist
+2. Save it to local device to play it later (done!) + sorting in playlist
 3. To see full metadata of video on one button + share link to other apps
 
 # Installing 
