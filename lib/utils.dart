@@ -3,30 +3,29 @@ import 'package:path_provider/path_provider.dart';
 import 'package:noradio/YT/mainPlayer.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
+// debug
 
-Future<bool> saveToDir(String nameForFile, Stream streamToFlush) async {
+String? saveOrDownloadErrorMessage;
+String? get UtilsDebugMessage => saveOrDownloadErrorMessage;
+
+Future<bool> saveToDir(String nameForFile) async {
   bool noError = true;
   try {
-    var directory = await getExternalStorageDirectory();
-    var appDocPath = directory!.path;
-    String mimetype =
-        MainPlayer().streamInfo.codec.mimeType.replaceAll('audio/', '');
-    var file =
-        await File(appDocPath + '/Videos' + '/' + nameForFile + '.' + mimetype)
-            .create(recursive: true);
-
-    var fileStream = file.openWrite();
-    await streamToFlush.pipe(fileStream);
-
-    await fileStream.flush().catchError((error) {
-      print(error + '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-      noError = false;
-    });
-    await fileStream.done.then((value) async { await fileStream.close(); });
+    Directory? directory = await getExternalStorageDirectory();
+    MainPlayer player = MainPlayer();
+    String? path = directory?.path;
+    if (path.runtimeType == String) {
+      String mimetype = player.streamInfo.codec.mimeType.replaceAll('audio/', '');
+      File file = await File(path! + '/Videos' + '/' + nameForFile + '.' + mimetype).create(recursive: true);
+      IOSink fileStream = file.openWrite(mode: FileMode.write);
+      player.getCurrentAudioStreamToFile().pipe(fileStream).then((_) => fileStream.flush());
+    }
   } catch (exception) {
-    print(exception.toString() + '!!!!!!!!!!!1');
+    noError = false;
+    saveOrDownloadErrorMessage = exception.toString();
+  } finally {
+    return noError;
   }
-  return noError;
 }
 
 Future<List<File>> getAll() async {

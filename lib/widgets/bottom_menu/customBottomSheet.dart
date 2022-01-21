@@ -50,23 +50,30 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
                 icon: const Icon(Icons.downloading),
                 onPressed: () async {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                        ' Видео ' + player.currentVideo.title + ' сохраняется '),
+                    content: Text('Аудиотрек: "' +
+                        player.currentVideo.title +
+                        '" сохраняется '),
                   ));
-                  await saveToDir(player.currentVideo.title, player.stream)
-                      .then((isSaved) {
+                  await saveToDir(player.currentVideo.title).then((isSaved) {
                     if (isSaved) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            ' Видео' + player.currentVideo.title + 'сохранено '),
+                        content: Text('Аудиотрек: "' +
+                            player.currentVideo.title +
+                            '" сохранен '),
                       ));
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text(' При сохранении видео произошла ошибка '),
-                      ));
+                      if (UtilsDebugMessage.runtimeType == String) {
+                        var message = UtilsDebugMessage!;
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                ' При сохранении аудио произошла ошибка: $message')));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text(
+                                ' При сохранении аудио произошла непридвиденная ошибка')));
+                      }
                     }
                   });
-
                 },
               ),
               IconButton(

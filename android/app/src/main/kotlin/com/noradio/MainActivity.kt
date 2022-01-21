@@ -1,4 +1,4 @@
-package none.com.telematch
+package com.noradio
 
 import io.flutter.embedding.android.FlutterActivity
 

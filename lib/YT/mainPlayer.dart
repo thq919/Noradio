@@ -80,6 +80,9 @@ class MainPlayer {
     videoDuration = await audioPlayer.setAudioSource(source, preload: false);
     audioPlayer.play();
   }
+  Stream<List<int>> getCurrentAudioStreamToFile() {
+   return stream = youHandler.videos.streamsClient.get(streamInfo);
+  }
 
   void playPosition(int whatPosition) async {
     audioPlayer
