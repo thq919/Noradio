@@ -15,7 +15,7 @@ Future<bool> saveToDir(String nameForFile) async {
     MainPlayer player = MainPlayer();
     String? path = directory?.path;
     if (path.runtimeType == String) {
-      String mimetype = player.streamInfo.codec.mimeType.replaceAll('audio/', '');
+      String mimetype = player.audioInfo.codec.mimeType.replaceAll('audio/', '');
       File file = await File(path! + '/Videos' + '/' + nameForFile + '.' + mimetype).create(recursive: true);
       IOSink fileStream = file.openWrite(mode: FileMode.write);
       player.getCurrentAudioStreamToFile().pipe(fileStream).then((_) => fileStream.flush());

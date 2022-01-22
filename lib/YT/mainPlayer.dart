@@ -18,7 +18,7 @@ class MainPlayer {
   // Youtube explode retrieved from and for YTexplode - data
   late StreamManifest streamManifest;
   late Stream<List<int>> stream;
-  late AudioOnlyStreamInfo streamInfo;
+  late AudioOnlyStreamInfo audioInfo;
 
   // current track info
   late String videoID;
@@ -70,18 +70,19 @@ class MainPlayer {
   Future<void> playAudio(String videoID) async {
     this.videoID = videoID;
     streamManifest = await youHandler.videos.streamsClient.getManifest(videoID);
-    streamInfo = streamManifest.audioOnly.withHighestBitrate();
-    stream = youHandler.videos.streamsClient.get(streamInfo).asBroadcastStream();
+    audioInfo = streamManifest.audioOnly.withHighestBitrate();
+    stream = youHandler.videos.streamsClient.get(audioInfo).asBroadcastStream();
+    int  streamLength = audioInfo.bitrate.bitsPerSecond * currentVideo.duration!.inSeconds;
     source = StreamAudio(
         stream: stream,
-        streamLength: streamInfo.size.totalBytes,
-        contentLength: streamInfo.size.totalBytes,
-        contentType: streamInfo.codec.toString());
+        streamLength: streamLength,
+        contentLength: audioInfo.size.totalBytes,
+        contentType: audioInfo.codec.toString());
     videoDuration = await audioPlayer.setAudioSource(source, preload: false);
     audioPlayer.play();
   }
   Stream<List<int>> getCurrentAudioStreamToFile() {
-   return stream = youHandler.videos.streamsClient.get(streamInfo);
+   return stream = youHandler.videos.streamsClient.get(audioInfo);
   }
 
   void playPosition(int whatPosition) async {

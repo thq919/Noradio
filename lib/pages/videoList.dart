@@ -16,7 +16,7 @@ class VideoList extends StatefulWidget {
 
 class _VideoListState extends State<VideoList> {
   String screenMessage = "Попробуйте ввести что нибудь в поиск";
-  final MainPlayer player = MainPlayer();
+  MainPlayer player = MainPlayer();
 
   late SearchList searchList;
   late Video currentVideo;
@@ -81,14 +81,16 @@ class _VideoListState extends State<VideoList> {
 
   void setCurrentAudioAndPlay(int pos) {
     currentVideoIndex = pos;
+    player.currentVideo = searchList.elementAt(pos);
     currentVideo = searchList.elementAt(pos);
     _videoIsPicked = true;
     player.playAudio(currentVideo.id.toString()).then((_) {
-      streamInfo = player.streamInfo;
+      streamInfo = player.audioInfo;
       _streamInfoIsCreated = true;
       player.setVideoDuration(currentVideo.duration!);
       player.setCurrentVideo(currentVideo);
       setState(() {
+        player;
         currentVideoIndex;
         streamInfo;
         currentVideo;
