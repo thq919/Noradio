@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+
 import 'package:noradio/YT/mainPlayer.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
 // debug
@@ -37,6 +38,12 @@ Future<List<File>> getAll() async {
     list.add(event as File);
   });
   return list;
+}
+
+Future<Uri?> getPathToSave() async {
+  Directory? string = await getExternalStorageDirectory();
+  String path = string!.path;
+  return Uri.parse(path);
 }
 // Permission per = Permission.manageExternalStorage;
 // Future<bool> requestPermission() async {

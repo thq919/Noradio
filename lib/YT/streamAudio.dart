@@ -1,6 +1,9 @@
-import 'package:just_audio/just_audio.dart';
+// import 'dart:io';
 
-class StreamAudio extends StreamAudioSource {
+import 'package:just_audio/just_audio.dart';
+// import 'package:noradio/utils.dart';
+
+class StreamAudio extends LockCachingAudioSource {
   Stream<List<int>> stream;
   int contentLength;
   int streamLength;
@@ -8,18 +11,18 @@ class StreamAudio extends StreamAudioSource {
 
   StreamAudio(
       {required this.stream,
-        required this.contentLength,
-        required this.streamLength, required this.contentType});
-
-  int getStreamLength() => streamLength;
-  int getContentLength() => contentLength;
+      required this.contentLength,
+      required this.streamLength,
+      required this.contentType,
+      required uri})
+      : super(uri);
 
   @override
   Future<StreamAudioResponse> request([int? start, int? end]) async {
     return StreamAudioResponse(
         stream: stream,
         contentType: contentType,
-        contentLength: contentLength,
+        contentLength: end.runtimeType == int ? end : contentLength,
         sourceLength: streamLength,
         rangeRequestsSupported: true,
         offset: start);

@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'package:just_audio/just_audio.dart';
-import 'package:noradio/YT/streamAudio.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+import 'package:just_audio/just_audio.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 // This is model for audio focused to play in stream&live mode
 
 class MainPlayer {
@@ -71,14 +70,16 @@ class MainPlayer {
     this.videoID = videoID;
     streamManifest = await youHandler.videos.streamsClient.getManifest(videoID);
     audioInfo = streamManifest.audioOnly.withHighestBitrate();
-    stream = youHandler.videos.streamsClient.get(audioInfo).asBroadcastStream();
-    int  streamLength = audioInfo.bitrate.bitsPerSecond * currentVideo.duration!.inSeconds;
-    source = StreamAudio(
-        stream: stream,
-        streamLength: streamLength,
-        contentLength: audioInfo.size.totalBytes,
-        contentType: audioInfo.codec.toString());
-    videoDuration = await audioPlayer.setAudioSource(source, preload: false);
+    // stream = youHandler.videos.streamsClient.get(audioInfo).asBroadcastStream().publishReplay();
+    // int  streamLength = audioInfo.bitrate.bitsPerSecond * currentVideo.duration!.inSeconds;
+    // source = StreamAudio(
+    //     stream: stream,
+    //     streamLength: streamLength,
+    //     contentLength: audioInfo.size.totalBytes,
+    //     contentType: audioInfo.codec.toString(),
+    //     uri: audioInfo.url);
+    audioPlayer.setUrl(audioInfo.url.toString(), preload: false);
+    // videoDuration = await audioPlayer.setAudioSource(source, preload: true);
     audioPlayer.play();
   }
   Stream<List<int>> getCurrentAudioStreamToFile() {
