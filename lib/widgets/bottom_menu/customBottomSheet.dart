@@ -87,7 +87,7 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
               IconButton(
                 icon: const Icon(Icons.play_arrow),
                 onPressed: () => player.play(),
-              )
+              ),
             ],
           ),
         ]),

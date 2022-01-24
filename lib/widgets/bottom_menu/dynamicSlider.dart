@@ -13,6 +13,7 @@ State<StatefulWidget> createState() => _DynamicSliderState();
 
 class _DynamicSliderState extends State<DynamicSlider> {
   double currentPosition = 1;
+  Duration currentDuration = Duration(seconds: 1);
 
   @override
   void didUpdateWidget(covariant DynamicSlider oldWidget) {
@@ -26,9 +27,15 @@ class _DynamicSliderState extends State<DynamicSlider> {
   Widget build(BuildContext context) {
     return SliderTheme(
       data: SliderThemeData(
+        // valueIndicatorColor: Colors.black,
+        // valueIndicatorShape: SliderComponentShape.noOverlay,
         overlayShape: SliderComponentShape.noOverlay,
       ),
       child: Slider(
+          divisions: widget.player.getVideoDuration()!.inSeconds,
+          label: Duration(seconds: listenToSteps().toInt())
+              .toString()
+              .replaceAll('.000000', ''),
           value: listenToSteps(),
           min: 0,
           max: widget.player.getVideoDuration()!.inSeconds.toDouble(),
@@ -46,9 +53,10 @@ class _DynamicSliderState extends State<DynamicSlider> {
   double listenToSteps() {
     widget.player.getPositionedStream().listen((event) {
       if(currentPosition==event.inSeconds.toDouble()) {
-        //skip setstate
+        //skip setState()
       } else {
         setState(() {
+          currentDuration = event;
           currentPosition = event.inSeconds.toDouble();
         }); }
     });

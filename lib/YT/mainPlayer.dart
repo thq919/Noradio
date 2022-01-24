@@ -32,6 +32,10 @@ class MainPlayer {
   late SearchList currentSearchList;
   bool searchListIsCreated = false;
 
+  // stream ticker for handling current time played track
+  late Stream<Duration> streamTicker;
+  bool _streamTickerExist = false;
+
   //Debug
   late String errorSearchAudio;
 
@@ -82,8 +86,9 @@ class MainPlayer {
     // videoDuration = await audioPlayer.setAudioSource(source, preload: true);
     audioPlayer.play();
   }
+
   Stream<List<int>> getCurrentAudioStreamToFile() {
-   return stream = youHandler.videos.streamsClient.get(audioInfo);
+    return stream = youHandler.videos.streamsClient.get(audioInfo);
   }
 
   void playPosition(int whatPosition) async {
@@ -94,9 +99,17 @@ class MainPlayer {
   }
 
   Stream<Duration> getPositionedStream() {
-    return MainPlayer().audioPlayer.createPositionStream(
-        minPeriod: const Duration(seconds: 1),
-        maxPeriod: const Duration(seconds: 1),
-        steps: currentVideo.duration!.inSeconds);
+    if (_streamTickerExist) {
+      return streamTicker;
+    } else {
+      _streamTickerExist = true;
+      return streamTicker = MainPlayer()
+          .audioPlayer
+          .createPositionStream(
+              minPeriod: const Duration(seconds: 1),
+              maxPeriod: const Duration(seconds: 1),
+              steps: currentVideo.duration!.inSeconds)
+          .asBroadcastStream();
+    }
   }
 }
