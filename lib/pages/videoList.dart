@@ -1,31 +1,38 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:noradio/widgets/video/videoSingleShelf.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+import '../YT/mainPlayer.dart';
 import '../utils.dart';
 import '../widgets/bottom_menu/customBottomSheet.dart';
-
-import '../YT/mainPlayer.dart';
 
 class VideoList extends StatefulWidget {
   VideoList({Key? key, required this.fromSaved}) : super(key: key);
   bool fromSaved = false;
+
   @override
   State<VideoList> createState() => _VideoListState();
 }
 
 class _VideoListState extends State<VideoList> {
   String screenMessage = "Попробуйте ввести что нибудь в поиск";
+
   MainPlayer player = MainPlayer();
+
+  var streamSubscription;
+  bool _streamStatesListened = false;
 
   late SearchList searchList;
   late Video currentVideo;
   late int currentVideoIndex;
-  late AudioOnlyStreamInfo streamInfo;
+  late AudioOnlyStreamInfo audioInfo;
 
   bool _listExist = false;
   bool _videoIsPicked = false;
-  bool _streamInfoIsCreated = false;
+  bool _audioInfoIsCreated = false;
 
   late ScrollController _scrollController;
 
@@ -38,7 +45,6 @@ class _VideoListState extends State<VideoList> {
         //this is analogue of double.infinite but chinese version
         initialScrollOffset: 1000);
     _scrollController.addListener(_scrollListener);
-
     super.initState();
   }
 
@@ -58,12 +64,12 @@ class _VideoListState extends State<VideoList> {
       if (_listExist)
         Expanded(
             child: RefreshIndicator(
-          onRefresh: _refreshIndicator,
-          child: ListView.builder(
-              reverse: true,
-              controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              //physics: const ScrollPhysics(),
+              onRefresh: _refreshIndicator,
+              child: ListView.builder(
+                  reverse: true,
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  //physics: const ScrollPhysics(),
               // shrinkWrap: true,
               itemCount: searchList.length,
               itemBuilder: (context, int pos) {
@@ -74,34 +80,56 @@ class _VideoListState extends State<VideoList> {
         ))
       else
         Text(screenMessage),
-      if (_videoIsPicked && _streamInfoIsCreated)
-        CustomBottomSheet(currentVideo, currentVideoIndex, streamInfo)
+      if (_videoIsPicked && _audioInfoIsCreated)
+
+        //warning
+        CustomBottomSheet(currentVideo, currentVideoIndex, audioInfo)
     ]);
   }
 
   void setCurrentAudioAndPlay(int pos) {
     currentVideoIndex = pos;
     player.currentVideo = searchList.elementAt(pos);
-    currentVideo = searchList.elementAt(pos);
+    currentVideo = player.currentVideo;
     _videoIsPicked = true;
-    player.playAudio(currentVideo.id.toString()).then((_) {
-      streamInfo = player.audioInfo;
-      _streamInfoIsCreated = true;
+    player.playAudio(pos, currentVideo.id.toString()).then((_) {
+      audioInfo = player.audioInfo;
+      _audioInfoIsCreated = true;
       player.setVideoDuration(currentVideo.duration!);
       player.setCurrentVideo(currentVideo);
       setState(() {
         player;
         currentVideoIndex;
-        streamInfo;
+        audioInfo;
         currentVideo;
         _videoIsPicked;
-        _streamInfoIsCreated;
+        _audioInfoIsCreated;
       });
+      listenStreamStateAndPlayNextOnDone();
     });
   }
 
   VideoSingleShelf buildVideoSingleShelfList(int pos) {
     return VideoSingleShelf(searchList.elementAt(pos));
+  }
+
+  void listenStreamStateAndPlayNextOnDone() {
+    if (_streamStatesListened == false) {
+      _streamStatesListened = true;
+      streamSubscription = player.getPlayerStateStream().listen((state) {
+        if (state == ProcessingState.completed &&
+            currentVideoIndex - 1 <= searchList.length &&
+            currentVideoIndex - 1 >= 0) {
+          try {
+            streamSubscription.cancel();
+            _streamStatesListened = false;
+            setCurrentAudioAndPlay(currentVideoIndex - 1);
+          } catch (error) {
+            print(error);
+          }
+        }
+      });
+    }
   }
 
   void fillListAndSetState(String searchQue) {
@@ -138,7 +166,7 @@ class _VideoListState extends State<VideoList> {
     setState(() {
       _listExist = false;
       screenMessage =
-          "Кажется видео закончились, pogchamp. Попробуйте еще поискать что ли";
+      "Кажется видео закончились, pogchamp. Попробуйте еще поискать что ли";
     });
   }
 

@@ -23,6 +23,7 @@ class MainPlayer {
   late String videoID;
   late Duration? videoDuration;
   late Video currentVideo;
+  late int currentIndex;
   late AudioSource source;
   late int contentLength;
   late int streamLength;
@@ -35,6 +36,9 @@ class MainPlayer {
   // stream ticker for handling current time played track
   late Stream<Duration> streamTicker;
   bool _streamTickerExist = false;
+
+  // stream for
+  late Stream streamStates;
 
   //Debug
   late String errorSearchAudio;
@@ -62,29 +66,31 @@ class MainPlayer {
   }
 
   Future<void> pause() => audioPlayer.pause();
+
   Future<void> play() => audioPlayer.play();
+
   Future<void> setVolume(double whatVolume) =>
       audioPlayer.setVolume(whatVolume);
+
   Duration? getVideoDuration() => videoDuration;
+
   void setVideoDuration(Duration whatDuration) => videoDuration = whatDuration;
+
   Video getCurrentVideo() => currentVideo;
+
   void setCurrentVideo(Video currentVideo) => this.currentVideo = currentVideo;
 
-  Future<void> playAudio(String videoID) async {
+  Future<void> playAudio(int currentIndex, String videoID) async {
     this.videoID = videoID;
+    this.currentIndex = currentIndex;
     streamManifest = await youHandler.videos.streamsClient.getManifest(videoID);
     audioInfo = streamManifest.audioOnly.withHighestBitrate();
-    // stream = youHandler.videos.streamsClient.get(audioInfo).asBroadcastStream().publishReplay();
-    // int  streamLength = audioInfo.bitrate.bitsPerSecond * currentVideo.duration!.inSeconds;
-    // source = StreamAudio(
-    //     stream: stream,
-    //     streamLength: streamLength,
-    //     contentLength: audioInfo.size.totalBytes,
-    //     contentType: audioInfo.codec.toString(),
-    //     uri: audioInfo.url);
     audioPlayer.setUrl(audioInfo.url.toString(), preload: false);
-    // videoDuration = await audioPlayer.setAudioSource(source, preload: true);
     audioPlayer.play();
+  }
+
+  Stream<ProcessingState> getPlayerStateStream() {
+    return streamStates = audioPlayer.processingStateStream.asBroadcastStream();
   }
 
   Stream<List<int>> getCurrentAudioStreamToFile() {
@@ -113,3 +119,14 @@ class MainPlayer {
     }
   }
 }
+
+// example of internal source playing
+// stream = youHandler.videos.streamsClient.get(audioInfo).asBroadcastStream().publishReplay();
+// int  streamLength = audioInfo.bitrate.bitsPerSecond * currentVideo.duration!.inSeconds;
+// source = StreamAudio(
+//     stream: stream,
+//     streamLength: streamLength,
+//     contentLength: audioInfo.size.totalBytes,
+//     contentType: audioInfo.codec.toString(),
+//     uri: audioInfo.url);
+// videoDuration = await audioPlayer.setAudioSource(source, preload: true);

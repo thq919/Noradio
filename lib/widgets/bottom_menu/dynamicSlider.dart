@@ -27,8 +27,6 @@ class _DynamicSliderState extends State<DynamicSlider> {
   Widget build(BuildContext context) {
     return SliderTheme(
       data: SliderThemeData(
-        // valueIndicatorColor: Colors.black,
-        // valueIndicatorShape: SliderComponentShape.noOverlay,
         overlayShape: SliderComponentShape.noOverlay,
       ),
       child: Slider(

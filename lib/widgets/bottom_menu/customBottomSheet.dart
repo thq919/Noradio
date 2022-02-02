@@ -40,59 +40,66 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       // height: MediaQuery.of(context).size.height / 4,
-      child: Column(children: [
-        DynamicSlider(player),
-        Row(children: [
-          ButtonBar(
-            alignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.downloading),
-                onPressed: () async {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Аудиотрек: "' +
-                        player.currentVideo.title +
-                        '" сохраняется '),
-                  ));
-                  await saveToDir(player.currentVideo.title).then((isSaved) {
-                    if (isSaved) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Аудиотрек: "' +
-                            player.currentVideo.title +
-                            '" сохранен '),
-                      ));
-                    } else {
-                      if (UtilsDebugMessage.runtimeType == String) {
-                        var message = UtilsDebugMessage!;
+      child: Container(
+        decoration: const BoxDecoration(
+            border: Border.fromBorderSide(BorderSide(color: Colors.black12)),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        child: Column(children: [
+          Row(children: [
+            ButtonBar(
+              alignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.downloading),
+                  onPressed: () async {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Аудиотрек: "' +
+                          player.currentVideo.title +
+                          '" сохраняется '),
+                    ));
+                    await saveToDir(player.currentVideo.title).then((isSaved) {
+                      if (isSaved) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                                ' При сохранении аудио произошла ошибка: $message')));
+                          content: Text('Аудиотрек: "' +
+                              player.currentVideo.title +
+                              '" сохранен '),
+                        ));
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text(
-                                ' При сохранении аудио произошла непридвиденная ошибка')));
+                        if (UtilsDebugMessage.runtimeType == String) {
+                          var message = UtilsDebugMessage!;
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  ' При сохранении аудио произошла ошибка: $message')));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text(
+                                  ' При сохранении аудио произошла непридвиденная ошибка')));
+                        }
                       }
-                    }
-                  });
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.volume_up),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.pause),
-                onPressed: () => player.pause(),
-              ),
-              IconButton(
-                icon: const Icon(Icons.play_arrow),
-                onPressed: () => player.play(),
-              ),
-            ],
-          ),
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.volume_up),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.pause),
+                  onPressed: () => player.pause(),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.play_arrow),
+                  onPressed: () => player.play(),
+                ),
+              ],
+            ),
+          ]),
+          DynamicSlider(player),
+          const Divider(),
+          VideoSingleShelf(currentVideo)
         ]),
-        VideoSingleShelf(currentVideo)
-      ]),
+      ),
     );
   }
 }
