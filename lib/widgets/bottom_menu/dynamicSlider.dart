@@ -15,13 +15,7 @@ class _DynamicSliderState extends State<DynamicSlider> {
   double currentPosition = 1;
   Duration currentDuration = Duration(seconds: 1);
 
-  @override
-  void didUpdateWidget(covariant DynamicSlider oldWidget) {
-    setState(() {
-      currentPosition = 1;
-    });
-    super.didUpdateWidget(oldWidget);
-  }
+
 
   @override
   Widget build(BuildContext context) {

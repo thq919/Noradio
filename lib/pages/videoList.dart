@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:noradio/widgets/searchBar/searchbarprovider.dart';
+import 'package:noradio/widgets/searchBar/searchBar.dart';
 import 'package:noradio/widgets/video/videoSingleShelf.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import '../YT/mainPlayer.dart';
@@ -14,14 +17,15 @@ class VideoList extends StatefulWidget {
   bool fromSaved = false;
 
   @override
-  State<VideoList> createState() => _VideoListState();
+  State<VideoList> createState() => VideoListState();
 }
 
-class _VideoListState extends State<VideoList> {
+class VideoListState extends State<VideoList> {
   String screenMessage = "Попробуйте ввести что нибудь в поиск";
 
   MainPlayer player = MainPlayer();
 
+  // ignore: prefer_typing_uninitialized_variables
   var streamSubscription;
   bool _streamStatesListened = false;
 
@@ -50,41 +54,42 @@ class _VideoListState extends State<VideoList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      //create own searchbar
-      TextFormField(
-          enableSuggestions: true,
-          onFieldSubmitted: (searchQue) {
-            if (widget.fromSaved == true) {
-              fillListFromSavedAndSetState();
-            } else {
-              fillListAndSetState(searchQue);
-            }
-          }),
-      if (_listExist)
-        Expanded(
-            child: RefreshIndicator(
-              onRefresh: _refreshIndicator,
-              child: ListView.builder(
-                  reverse: true,
-                  controller: _scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  //physics: const ScrollPhysics(),
-              // shrinkWrap: true,
-              itemCount: searchList.length,
-              itemBuilder: (context, int pos) {
-                return InkWell(
-                    onTap: () => setCurrentAudioAndPlay(pos),
-                    child: buildVideoSingleShelfList(pos));
-              }),
-        ))
-      else
-        Text(screenMessage),
-      if (_videoIsPicked && _audioInfoIsCreated)
-
-        //warning
-        CustomBottomSheet(currentVideo, currentVideoIndex, audioInfo)
-    ]);
+    return ChangeNotifierProvider(
+      create: (context) => SearchBarModel(),
+      child:
+          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        //create own searchbar
+        const SearchBar(),
+        //      TextFormField(
+        //          enableSuggestions: true,
+        //          onFieldSubmitted: (searchQue) {
+        //            if (widget.fromSaved == true) {
+        //              fillListFromSavedAndSetState();
+        //            } else {
+        //              fillListAndSetState(searchQue);
+        //            }
+        //          }),
+        if (_listExist)
+          Expanded(
+              child: RefreshIndicator(
+            onRefresh: _refreshIndicator,
+            child: ListView.builder(
+                reverse: true,
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: searchList.length,
+                itemBuilder: (context, int pos) {
+                  return InkWell(
+                      onTap: () => setCurrentAudioAndPlay(pos),
+                      child: buildVideoSingleShelfList(pos));
+                }),
+          ))
+        else
+          Text(screenMessage),
+        if (_videoIsPicked && _audioInfoIsCreated)
+          CustomBottomSheet(currentVideo, currentVideoIndex, audioInfo)
+      ]),
+    );
   }
 
   void setCurrentAudioAndPlay(int pos) {
@@ -166,7 +171,7 @@ class _VideoListState extends State<VideoList> {
     setState(() {
       _listExist = false;
       screenMessage =
-      "Кажется видео закончились, pogchamp. Попробуйте еще поискать что ли";
+          "Кажется видео закончились, pogchamp. Попробуйте еще поискать что ли";
     });
   }
 

@@ -7,11 +7,12 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'dynamicSlider.dart';
 
 class CustomBottomSheet extends StatefulWidget {
-  Video currentVideo;
-  int currentVideoIndex;
-  AudioOnlyStreamInfo streamInfo;
+  final Video currentVideo;
+  final int currentVideoIndex;
+  final AudioOnlyStreamInfo streamInfo;
 
-  CustomBottomSheet(this.currentVideo, this.currentVideoIndex, this.streamInfo,
+  const CustomBottomSheet(
+      this.currentVideo, this.currentVideoIndex, this.streamInfo,
       {Key? key})
       : super(key: key);
 
@@ -28,10 +29,8 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
 
   @override
   void didUpdateWidget(covariant CustomBottomSheet oldWidget) {
-    setState(() {
-      currentVideo = widget.currentVideo;
-      currentVideoIndex = widget.currentVideoIndex;
-    });
+    currentVideo = widget.currentVideo;
+    currentVideoIndex = widget.currentVideoIndex;
     super.didUpdateWidget(oldWidget);
   }
 
@@ -54,6 +53,7 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
                   icon: const Icon(Icons.downloading),
                   onPressed: () async {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Colors.grey,
                       content: Text('Аудиотрек: "' +
                           player.currentVideo.title +
                           '" сохраняется '),
@@ -61,6 +61,7 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
                     await saveToDir(player.currentVideo.title).then((isSaved) {
                       if (isSaved) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          backgroundColor: Colors.grey,
                           content: Text('Аудиотрек: "' +
                               player.currentVideo.title +
                               '" сохранен '),
@@ -69,6 +70,7 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
                         if (UtilsDebugMessage.runtimeType == String) {
                           var message = UtilsDebugMessage!;
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Colors.grey,
                               content: Text(
                                   ' При сохранении аудио произошла ошибка: $message')));
                         } else {
