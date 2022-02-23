@@ -1,8 +1,10 @@
+// ignore_for_file: unnecessary_this
+
 import 'dart:async';
 
 import 'package:just_audio/just_audio.dart';
+import 'package:noradio/main.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
-// This is model for audio focused to play in stream&live mode
 
 class MainPlayer {
   static final MainPlayer _mainPlayer = MainPlayer._privateConstructor();
@@ -59,6 +61,7 @@ class MainPlayer {
   Future<SearchList?> getNextPage(SearchList searchList) async {
     SearchList? list = await searchList.nextPage();
     if (list.runtimeType == SearchList && list!.isNotEmpty) {
+      this.currentSearchList = list;
       return list;
     } else {
       return null;
@@ -74,18 +77,43 @@ class MainPlayer {
 
   Duration? getVideoDuration() => videoDuration;
 
-  void setVideoDuration(Duration whatDuration) => videoDuration = whatDuration;
-
   Video getCurrentVideo() => currentVideo;
 
-  void setCurrentVideo(Video currentVideo) => this.currentVideo = currentVideo;
-
-  Future<void> playAudio(int currentIndex, String videoID) async {
-    this.videoID = videoID;
-    this.currentIndex = currentIndex;
+  void setCurrentVideo(Video currentVideo, [int? pos]) async {
+    this.currentVideo = currentVideo;
+    if (pos != null) {
+      model.setVideoIndex(pos);
+      this.currentIndex = pos;
+    }
     streamManifest = await youHandler.videos.streamsClient.getManifest(videoID);
     audioInfo = streamManifest.audioOnly.withHighestBitrate();
-    audioPlayer.setUrl(audioInfo.url.toString(), preload: false);
+    model.setAudioStreamInfo(audioInfo);
+
+
+    model.setVideo(currentVideo);
+  }
+
+  Future<void> playAudio(int pos) async {
+    this.videoID = currentSearchList.elementAt(pos).id.toString();
+    this.currentIndex = pos;
+
+    streamManifest = await youHandler.videos.streamsClient.getManifest(videoID);
+
+    audioInfo = streamManifest.audioOnly.withHighestBitrate();
+    model.setAudioStreamInfo(audioInfo);
+
+     Video currentVideo = currentSearchList.elementAt(pos);
+    this.currentVideo = currentVideo;
+    await audioPlayer
+        .setUrl(audioInfo.url.toString(), preload: true)
+        .then((videoDuration) => this.videoDuration = videoDuration);
+    setCurrentVideo(currentVideo);
+
+   
+
+    model.setVideoIndex(pos);
+    model.setVideo(currentVideo);
+
     audioPlayer.play();
   }
 
