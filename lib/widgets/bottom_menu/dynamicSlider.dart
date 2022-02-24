@@ -1,21 +1,37 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:noradio/YT/mainPlayer.dart';
 
 class DynamicSlider extends StatefulWidget {
-final MainPlayer player;
+  final MainPlayer player;
 // final Video currentVideo;
 // final AudioOnlyStreamInfo streamInfo;
 
-const DynamicSlider(this.player, {Key? key}) : super(key: key);
-@override
-State<StatefulWidget> createState() => _DynamicSliderState();
+  const DynamicSlider(this.player, {Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _DynamicSliderState();
 }
 
 class _DynamicSliderState extends State<DynamicSlider> {
   double currentPosition = 1;
   Duration currentDuration = Duration(seconds: 1);
 
+  late Stream<Duration> stream;
+  late StreamSubscription<Duration> steps;
 
+  @override
+  void initState() {
+    stream = widget.player.getPositionedStream();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    steps.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +59,20 @@ class _DynamicSliderState extends State<DynamicSlider> {
   }
 
   double listenToSteps() {
-    widget.player.getPositionedStream().listen((event) {
-      if(currentPosition==event.inSeconds.toDouble()) {
+    steps = stream.listen((event) {
+      if (mounted == false) {
+        //do not call setState() anymore
+        steps.cancel();
+        return;
+      }
+      if (currentPosition == event.inSeconds.toDouble()) {
         //skip setState()
       } else {
         setState(() {
           currentDuration = event;
           currentPosition = event.inSeconds.toDouble();
-        }); }
+        });
+      }
     });
     return currentPosition;
   }

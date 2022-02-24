@@ -89,16 +89,18 @@ class VideoListState extends State<VideoList> {
         Text(screenMessage),
       if (_videoIsPicked && _audioInfoIsCreated)
         //CustomBottomSheet(currentVideo, currentVideoIndex, audioInfo)
-        const CustomBottomSheet()
+        const CustomBottomSheet(showVideoShelf: true)
     ]);
   }
 
   void seeVideoDescription(int pos) {
     Video video = searchList.elementAt(pos);
-    widget.model.setVideo(video);
-    widget.model.setVideoIndex(pos);
+   // widget.model.setVideo(video);
+   // widget.model.setVideoIndex(pos);
     
-    Navigator.pushNamed(context, '/videoDescription');
+    Navigator.pushNamed(context, '/videoDescription', arguments: {
+      'videoDescriptionOf': video
+    });
   }
 
   void _setCurrentAudioAndPlay(int pos) {

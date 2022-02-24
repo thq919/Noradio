@@ -8,16 +8,9 @@ import 'package:noradio/listVideoProvider/listVideoProvider.dart';
 import 'dynamicSlider.dart';
 
 class CustomBottomSheet extends StatefulWidget {
-  // final Video? currentVideo;
-  // final int? currentVideoIndex;
-  // final AudioOnlyStreamInfo? streamInfo;
-
-  // const CustomBottomSheet(
-  //     this.currentVideo, this.currentVideoIndex, this.streamInfo,
-  //     {Key? key})
-  //     : super(key: key);
-
-  const CustomBottomSheet({Key? key}) : super(key: key);
+  final bool showVideoShelf;
+  const CustomBottomSheet({Key? key, required this.showVideoShelf})
+      : super(key: key);
 
   @override
   State<CustomBottomSheet> createState() => CustomBottomSheetState();
@@ -25,24 +18,20 @@ class CustomBottomSheet extends StatefulWidget {
 
 class CustomBottomSheetState extends State<CustomBottomSheet> {
   MainPlayer player = MainPlayer();
-  //  late Video? currentVideo = widget.currentVideo;
-  //  late int? currentVideoIndex = widget.currentVideoIndex;
-  //  late Duration currentPosition;
-
-  // @override
-  // void didUpdateWidget(covariant CustomBottomSheet oldWidget) {
-  //   currentVideo = widget.currentVideo;
-  //   currentVideoIndex = widget.currentVideoIndex;
-  //   super.didUpdateWidget(oldWidget);
-  // }
 
   @override
   Widget build(BuildContext context) {
     ListVideoProviderModel model = context.watch<ListVideoProviderModel>();
-    Video currentVideo = model.video;
-    int currentVideoIndex = model.index;
-    AudioOnlyStreamInfo streamInfo = model.streamInfo;
 
+    late Video? currentVideo;
+    late int? currentVideoIndex;
+    late AudioOnlyStreamInfo? streamInfo;
+
+    if (model.isVideoExist()) {
+      currentVideo = model.video;
+      currentVideoIndex = model.index;
+      streamInfo = model.streamInfo;
+    }
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       // height: MediaQuery.of(context).size.height / 4,
@@ -104,9 +93,9 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
               ],
             ),
           ]),
-          DynamicSlider(player),
-          const Divider(),
-          VideoSingleShelf(currentVideo)
+          if (model.isVideoExist()) DynamicSlider(player),
+          if (model.isVideoExist()) const Divider(),
+          if (model.isVideoExist()) VideoSingleShelf(currentVideo as Video),
         ]),
       ),
     );
