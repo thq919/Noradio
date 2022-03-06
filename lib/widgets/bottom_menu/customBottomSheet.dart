@@ -21,17 +21,16 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    ListVideoProviderModel model = context.watch<ListVideoProviderModel>();
+    ListVideoProviderModel model = context.read<ListVideoProviderModel>();
 
     late Video? currentVideo;
     late int? currentVideoIndex;
     late AudioOnlyStreamInfo? streamInfo;
 
-    if (model.isVideoExist()) {
-      currentVideo = model.video;
-      currentVideoIndex = model.index;
-      streamInfo = model.streamInfo;
-    }
+      currentVideo = context.watch<ListVideoProviderModel>().video;
+      currentVideoIndex = context.watch<ListVideoProviderModel>().index;
+      streamInfo = context.watch<ListVideoProviderModel>().streamInfo;
+    
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       // height: MediaQuery.of(context).size.height / 4,
@@ -95,7 +94,7 @@ class CustomBottomSheetState extends State<CustomBottomSheet> {
           ]),
           if (model.isVideoExist()) DynamicSlider(player),
           if (model.isVideoExist()) const Divider(),
-          if (model.isVideoExist()) VideoSingleShelf(currentVideo as Video),
+          if (model.isVideoExist()) VideoSingleShelf(currentVideo!),
         ]),
       ),
     );

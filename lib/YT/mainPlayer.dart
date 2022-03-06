@@ -8,6 +8,7 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MainPlayer {
   static final MainPlayer _mainPlayer = MainPlayer._privateConstructor();
+
   MainPlayer._privateConstructor();
   factory MainPlayer() => _mainPlayer;
 
@@ -34,6 +35,9 @@ class MainPlayer {
   late String searchQuery;
   late SearchList currentSearchList;
   bool searchListIsCreated = false;
+
+  // comments of selected Video choosed to get comments
+  late CommentsList commentsList;
 
   // stream ticker for handling current time played track
   late Stream<Duration> streamTicker;
@@ -89,7 +93,6 @@ class MainPlayer {
     audioInfo = streamManifest.audioOnly.withHighestBitrate();
     model.setAudioStreamInfo(audioInfo);
 
-
     model.setVideo(currentVideo);
   }
 
@@ -101,15 +104,12 @@ class MainPlayer {
 
     audioInfo = streamManifest.audioOnly.withHighestBitrate();
     model.setAudioStreamInfo(audioInfo);
-
-     Video currentVideo = currentSearchList.elementAt(pos);
+    Video currentVideo = currentSearchList.elementAt(pos);
     this.currentVideo = currentVideo;
     await audioPlayer
         .setUrl(audioInfo.url.toString(), preload: true)
         .then((videoDuration) => this.videoDuration = videoDuration);
     setCurrentVideo(currentVideo);
-
-   
 
     model.setVideoIndex(pos);
     model.setVideo(currentVideo);
@@ -144,6 +144,20 @@ class MainPlayer {
               maxPeriod: const Duration(seconds: 1),
               steps: currentVideo.duration!.inSeconds)
           .asBroadcastStream();
+    }
+  }
+
+  Future<CommentsList?> getComments(Video video) {
+    return youHandler.videos.comments.getComments(video);
+  }
+
+  Future<CommentsList?> getCommentaryNextPage(CommentsList commnestList) async {
+    CommentsList? list = await commnestList.nextPage();
+    if (list.runtimeType == CommentsList && list!.isNotEmpty) {
+      this.commentsList = list;
+      return list;
+    } else {
+      return null;
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:noradio/pages/commentaryPage/commentaryPage.dart';
 import 'package:noradio/pages/videoDescription.dart';
 import 'package:noradio/theme.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
           routes: {
             '/': (context) => HomePage(title: 'main screen', model: model),
             '/videoDescription': (context) => const VideoDescription(),
+            '/videoCommentary': (context) => const CommentaryPage(),
           }),
     );
   }

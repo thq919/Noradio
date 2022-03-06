@@ -10,17 +10,17 @@ class ListVideoProviderModel extends ChangeNotifier {
 
   void setVideo(newVideo) {
     video = newVideo;
-    if (video != newVideo) () => notifyListeners();
+    notifyListeners();
   }
 
   void setVideoIndex(int pos) {
     index = pos;
-    if (index != pos) () => notifyListeners();
+   notifyListeners();
   }
 
   void setAudioStreamInfo(AudioOnlyStreamInfo info) {
     streamInfo = info;
-    if (streamInfo != info) () => notifyListeners();
+    notifyListeners();
   }
 
   bool isVideoExist() {

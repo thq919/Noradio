@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:noradio/main.dart';
 // import 'package:noradio/widgets/searchBar/searchbarprovider.dart';
 // import 'package:noradio/widgets/searchBar/searchBar.dart';
 import 'package:noradio/widgets/video/videoSingleShelf.dart';
@@ -95,22 +96,24 @@ class VideoListState extends State<VideoList> {
 
   void seeVideoDescription(int pos) {
     Video video = searchList.elementAt(pos);
-   // widget.model.setVideo(video);
-   // widget.model.setVideoIndex(pos);
-    
-    Navigator.pushNamed(context, '/videoDescription', arguments: {
-      'videoDescriptionOf': video
-    });
+    // widget.model.setVideo(video);
+    // widget.model.setVideoIndex(pos);
+
+    Navigator.pushNamed(context, '/videoDescription',
+        arguments: {'videoDescriptionOf': video});
   }
 
   void _setCurrentAudioAndPlay(int pos) {
     currentVideoIndex = pos;
     _videoIsPicked = true;
+    model.setVideo(searchList.elementAt(pos));
+    model.setVideoIndex(pos);
     player.playAudio(pos).then((_) {
       currentVideo = player.currentVideo;
       audioInfo = player.audioInfo;
       _audioInfoIsCreated = true;
       setState(() {
+        model;
         player;
         currentVideoIndex;
         audioInfo;
