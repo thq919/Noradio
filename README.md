@@ -3,8 +3,10 @@
 Youtube client with player style.
 That allow to play YouTube content in only audio included.
 
-
 # Installing 
+![Screenshot_1650843908](https://user-images.githubusercontent.com/89457417/165001705-1a7494b3-58d4-41c1-ae8a-c28db2b86289.png)
+![Screenshot_1650843925](https://user-images.githubusercontent.com/89457417/165001710-f9e14019-c848-4e6a-9a72-e6951809eb8f.png)
+
 Created and tested for android only
 
 1. download project;
