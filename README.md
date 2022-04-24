@@ -1,16 +1,8 @@
 # Noradio
 
-Android player + another youtube client.
-That allow to play YouTube content with this opportunities:
+Youtube client with player style.
+That allow to play YouTube content in only audio included.
 
-1. Simple player UI for Youtube searching
-2. Listen music, podcasts without downloading actual video useless for listening
-3. No ads + no requires to auth (and so on - no possibility for now :) 
-
-Things to do:
-1. Background management from up notification menu
-2. Save it to local device to play it later (done!) + sorting in playlist
-3. To see full metadata of video on one button + share link to other apps
 
 # Installing 
 Created and tested for android only
